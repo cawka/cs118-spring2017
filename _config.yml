@@ -1,0 +1,74 @@
+safe: false
+source: .
+destination: ./_site
+highlighter: rouge
+markdown: kramdown
+exclude: ['CNAME', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'README.md', '.sass-cache']
+sass:
+  style: uncompressed
+gems:
+  - jekyll-bootstrap-sass
+
+bootstrap:
+  assets: true
+  
+url: http://web.cs.ucla.edu
+baseurl: /classes/spring17/cs118
+
+# Configuration for permalink
+permalink: /:title.html
+
+# Configuration for site
+title: "CS118: Computer Network Fundamentals - Spring 2017 (UCLA)"
+description: 
+author: Alexander Afanasyev
+email:
+
+# Configuration for navbar.html
+navbar_list:
+- name: Home
+  link: /
+- name: Syllabus
+  link: /syllabus.html
+- name: Homeworks
+  link: /homeworks.html
+# - name: Project 1
+#   link: /project-1.html
+# - name: Project 2
+#   link: /project-2.html
+
+course_info:
+  times: Mondays/Wednesdays 8am-9:50am
+  room: BH 3400
+  name: Alex Afanasyev
+  contact: lixia at cs.ucla.edu
+  office_hours: TBD
+
+  homeworks_due: Wednesday of the week following the assignment, 11pm
+  midterm: TBD
+  
+  final: Wednesday, TBD, 8am-9:50am
+  final_room: BH 3400
+
+  sections:
+    - times: Friday / TBD
+      room: TBD
+      name: TBD
+      contact: TBD
+      office_hours: TBD
+
+    - times: Friday / TBD
+      room: TBD
+      name: TBD
+      contact: TBD
+      office_hours: TBD
+    
+    - times: Friday / TBD
+      room: TBD
+      name: TBD
+      contact: TBD
+      office_hours: TBD
+
+  projects:
+    - deadline: TBD
+    - deadline: TBD
