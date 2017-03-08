@@ -12,4 +12,5 @@ This course provides an introduction to fundamental concepts in the design and i
 
 ## Course Announcements
 
--  First lecture will be on April 3, 2017
+- First lecture will be on April 3, 2017
+- The classroom has changed to **ROLFE 1200**

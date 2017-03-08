@@ -39,32 +39,38 @@ navbar_list:
 
 course_info:
   times: Mondays/Wednesdays 8am-9:50am
-  room: BH 3400
+  room: ROLFE 1200
   name: Alex Afanasyev
-  contact: lixia at cs.ucla.edu
+  contact: aa at cs.ucla.edu
   office_hours: TBD
 
   homeworks_due: Wednesday of the week following the assignment, 11pm
   midterm: TBD
   
   final: Wednesday, TBD, 8am-9:50am
-  final_room: BH 3400
+  final_room: ROLFE 1200
 
   sections:
-    - times: Friday / TBD
-      room: TBD
+    - times: Friday / 10:00am-11:50am
+      room: BH 5264
       name: TBD
       contact: TBD
       office_hours: TBD
 
-    - times: Friday / TBD
-      room: TBD
+    - times: Friday / 12:00pm-1:50pm
+      room: BH 5264
       name: TBD
       contact: TBD
       office_hours: TBD
     
-    - times: Friday / TBD
-      room: TBD
+    - times: Friday / 2:00pm-3:50pm
+      room: BH 5249
+      name: TBD
+      contact: TBD
+      office_hours: TBD
+
+    - times: Friday / 8:00am-9:50am
+      room: GEOLOGY 4660
       name: TBD
       contact: TBD
       office_hours: TBD
