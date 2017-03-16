@@ -14,7 +14,9 @@ This course provides an introduction to fundamental concepts in the design and i
 
 ## Required Textbook
 
-- "Computer Networking: A Top-Down Approach (7th Edition)" by James F. Kurose and Keith W. Ross.
+- "Computer Networking: A Top-Down Approach (5/6/7th Edition)" by James F. Kurose and Keith W. Ross.
+
+In addition to the textbook, students expected to do their own research online, using Wikipedia, RFCs, and other technical documentation.  This especially applies to some of the homework problems.
 
 ## Prerequisites
 
@@ -33,7 +35,7 @@ This course provides an introduction to fundamental concepts in the design and i
     </tr>
     <tr>
       <td>Programming Projects</td>
-      <td>40% (20%/20%)</td>
+      <td>40% (8%/16%/16%)</td>
     </tr>
     <tr>
       <td>Midterm exam</td>
@@ -49,7 +51,7 @@ This course provides an introduction to fundamental concepts in the design and i
 - Weekly homework will be assigned after the 2nd lecture every week and must be submitted by 11:00pm next Thursday.
 - Midterm Exam
 - Final Exam
-- Two programming projects
+- Three programming projects
 
 <div class="row">
 </div>
@@ -63,7 +65,10 @@ You are all encouraged to visit us during office hours or email us. Class partic
 Homework assignment must be done by **each student individually**
 {: class="bs-callout bs-callout-info" }
 
-Programming projects can be done in groups of 1-3 students
+First programming project is individual.
+{: class="bs-callout bs-callout-warning" }
+
+Two other programming projects should be done in groups of 2-3 students.
 {: class="bs-callout bs-callout-warning" }
 
 No late homework or project submission.

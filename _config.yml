@@ -36,13 +36,15 @@ navbar_list:
 #   link: /project-1.html
 # - name: Project 2
 #   link: /project-2.html
+# - name: Project 3
+#   link: /project-3.html
 
 course_info:
   times: Mondays/Wednesdays 8am-9:50am
   room: ROLFE 1200
   name: Alex Afanasyev
   contact: aa at cs.ucla.edu
-  office_hours: TBD
+  office_hours: Wednesday 5:30pm-6:30pm (BH 4809), other times by appointment 
 
   homeworks_due: Wednesday of the week following the assignment, 11pm
   midterm: TBD
@@ -76,5 +78,6 @@ course_info:
       office_hours: TBD
 
   projects:
+    - deadline: TBD
     - deadline: TBD
     - deadline: TBD
