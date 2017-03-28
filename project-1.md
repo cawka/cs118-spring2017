@@ -1,154 +1,110 @@
 ---
 layout: page
-title: Project 1
+title: "Project 1: Simple File Transfer over TCP"
+group: "Project 1"
 ---
 
 * toc
 {:toc}
 
-<!-- # Project 1: Simple HTTP Client and Server -->
-
-## Revisions
-
-More hints and resources may be added later.
-
 ## Overview
 
-In this project, you will learn socket programming and the basic of HTTP protocol through developing a simple Web server and client.
+In this project, you will need to implement a simple client-server application that transfers a file over a TCP connection.
 
 All implementations should be written in C++ using [BSD sockets](http://en.wikipedia.org/wiki/Berkeley_sockets).
 **No high-level network-layer abstractions (like Boost.Asio or similar) are allowed in this project.**
 You are allowed to use some high-level abstractions, including C++11 extensions, for parts that are not directly related to networking, such as string parsing, multi-threading.
 We will also accept implementations written in C, however use of C++ is preferred.
 
+The objective of this project is to learn basic operations of BSD sockets, understand implications of using the API, as well as to discover common pitfalls when working with network operations.
+
+You are required to use `git` to track the progress of your work. **The project can receive a full grade only if the submission includes git history no shorter than 3 commits.**
+
+You are encouraged to host your code in private repositories on [GitHub](https://github.com/), [GitLab](https://gitlab.com), or other places.  At the same time, you are PROHIBITED to make your code for the class project public during the class or any time after the class.  If you do so, you will be violating academic honestly policy that you have signed, as well as the student code of conduct and be subject to serious sanctions.
+{: class="alert alert-danger"}
 
 ## Task Description
 
-The project contains two parts: a Web server and a Web client.
-The Web server accepts an HTTP request, parses the request, and looks up the requested file in the local file system.
-If the file exists, the server returns the content of the file as part of HTTP response,
-otherwise returning HTTP response with the corresponding error code.
+The project contains two parts: a server and a client.
 
-After retrieving the response from the Web server, the client saves the retrieved file in the local file system.
+- The server listens for TCP connections and saves all the received data from the client in a file.
+- The client connects to the server and as soon as connection established, sends the content of a file to the server.
 
-The basic part of this project only requires you to implement HTTP 1.0: the client and server will talk to each other through **non-persistent** connections.
-If you client and/or server supports HTTP 1.1, you will get bonus points, see details in [Grading](#http1.1)).
+### Server Application Specification
 
-## How to approach the project
+The server application MUST be compiled into `server` binary, accepting two command-line arguments:
 
-You may want to approach the project in three stages: 
+    $ server <PORT> <FILE-DIR>
 
-1. Implementing **HTTP message abstraction**
-2. Implementing **Web client** module
-3. Implementing **Web server** module.
+- `<PORT>`: port number on which server will listen on connections.  The server must accept connections coming from any interface.
+- `<FILE-DIR>`: directory name where to save the received files.
 
-### HTTP message abstraction
+For example, the command below should start the Web server listening on port `5000` and saving received files in the directory `/save`.
 
-As the first step, you need to implement several helper classes that can help you to parse and construct an HTTP message, which can be either HTTP request or HTTP response.
-For example, you may want to implement an `HttpRequest` class that can help you to customize the HTTP request header and encode the HTTP request into a string of bytes of the wire format.  Some high-level pseudo code would look like:
+    $ ./server 5000 /save
 
-    HttpRequest request;
-    request.setUrl(...);
-    request.setMethod(...);
-    vector<uint8_t> wire = request.endcode();
+**Requirements**:
 
-Note that you only needs to implement HTTP `GET` request in this project.
+- The server must open a listening socket on the specified port number
 
-You may also want to implement an `HttpRequest` constructor method that creates an `HttpRequest` object from the wire encoded request.
+- The server should gracefully process incorrect port number and exit with a non-zero error code (you can assume that the folder is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
-    HttpRequest request;
-    request.consume(wire);
+- The server should exit with code 0 when receiving `SIGQUIT`/`SIGTERM` signal
 
-Similarly, you may also want to implement an `HttpResponse` class that can facilitate processing HTTP responses.
+- The server should be able to accept and process multiple connection from clients
 
-### Web server
+- The server must count all established connections (1 for the first connect, 2 for the second, etc.).  The received file over the connection must be saved to `<FILE-DIR>/<CONNECTION-ID>.file` file  (e.g., `/save/1.file`, `/save/2.file`, etc.).  If the client doesn't send any data during gracefully terminated TCP connection, the server should create an empty file with the name that corresponds to the connection number.
 
-After finishing HTTP abstraction, you can start building your Web server.
-The eventual output is a binary `web-server`, which must accept three command-line arguments: hostname of the Web site, a port number, and a directory name.
+- The server must assume error if no data received from the client for over 10 seconds.  It should abort the connection and write a single `ERROR` string into the corresponding file.
 
-    $ web-server [hostname] [port] [file-dir]
+- The server should be able to accept and save files up to 100 MiB
 
-For example, the command below should start the Web server with host name `localhost` listening on port `4000` and serving files from the directory `/tmp`.
+### Client Application Specification
 
-    $ ./web-server localhost 4000 /tmp
+The client application MUST be compiled into `client` binary, accepting three command-line arguments:
 
-The default arguments for `web-server` must be `localhost`, `4000`, and `.` (current working directory).
+    $ ./client <HOSTNAME-OR-IP> <PORT> <FILENAME>
 
-The Web server needs to convert the hostname to an IP address and opens a listening socket on the IP address and the specified port number.
-Through the listening socket, the Web server accepts the connection requests from clients and establishes connections to the clients.
-Through the established connection, the Web server should receive the HTTP request sent by the client, and return the requested file in terms of HTTP response.
-The Web server **must** handle concurrent connections.
-In other words, the web server can talk to multiple clients at the same time.
+- `<HOSTNAME-OR-IP>`: hostname or IP address of the server to connect
+- `<PORT>`: port number of the server to connect
+- `<FILENAME>`: name of the file to transfer to the server after the connection is established.
 
-After implementing the Web server, you can test it by visting it through some widely used Web clients (e.g., Firefox, wget) on your local system.
+For example, the command below should result in connection to a server on the same machine listening on port 5000 and transfer content of `file.txt`:
 
-### Web client
+    $ ./client localhost 5000 file.txt
 
-After finishing the Web server, you can start building your Web client.
-The eventual output is also a binary `web-client`, which accepts multiple URLs as arguments.
+**Requirements**:
 
-    $ ./web-client [URL] [URL]...
+- The client must be able to connect to the specified server and port, transfer the specified file, and gracefully terminate the connection.
 
-For example, the command below should start the Web client that fetches `index.html` file from your webserver:
+- The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
-    $ ./web-client http://localhost:4000/index.html
+- Client application should exit with code 0 after successful transfer of the file to server.  It should support transfer of files that are up to 100 MiB file.
 
-The Web client first tries to connect to the Web server as specified in the URL.
-Once the connection is established, the client constructs the HTTP request and sends it to the Web server, expecting a response.
-After receiving the response, the client needs to parse it to distinguish success or failure codes.
-Finally, if the file is successfully retrieved, it should be saved in the current directory using the name inferred from the URL.
+- Client should handle connection and transmission errors.  The reaction to network or server errors should be **no longer that 10 seconds**.  This includes connection and transmission stages: (1) timeout to connect to server should be no longer than 10 seconds, and (2) reaction to no data from server (not being able to send more data to server) should be no longer than 10 seconds, after which connection should be aborted.
 
-You can also test your implementation by fetching data from some real websites or the web server you just implemented.
+## A Few Hints
 
-## Hints
+General hints:
 
-About HTTP abstractions:
+*  If you are running the client and the server on the same machine, you can use "localhost" (without quotes) or "127.0.0.1" (without quotes) as the name of the server.
 
-*  How many classes you need to create for the HTTP abstraction?
-   * Can you use inheritance to reduce your workload?
+*  You should NOT use port numbers in the range of 0-1024 (these are reserved ports).
 
-*  If we have the complete HTTP message, it is trivial to decode it.
-   * How do we know we have received the complete message? especially for HTTP response?
-   * For HTTP GET request, we know it ends with `\r\n\r\n`, but what if we only get part of it from `read` or `recv`, e.g., only `\r`?
-   * For HTTP response, is it possible to decode the whole response before we get the complete message?
+Here are some hints of using multi-thread techniques to implement the server.
 
-*  You may assume the size of requested files is less than 1GB.
-
-*  Your implementation must support three error codes: `200 OK`, `400 Bad request`, `404 Not found`. All the other error codes (e.g., `403 Forbidden`, `501 Not implemented`, `505 HTTP version not supported`) are optional.
-
-*  What to return if the HTTP Request has a URL of "/"?
-   * If the server has index.html and request is "/index.html",  the server MUST return index.html
-   * If the server has index.html and request is "/", the server may return index.html or 404, both implementations are correct.
-   * If the server does not have index.html and request is "/index.html" or "/", the server MUST return 404.
-
-Here are some hints of using multi-thread techniques to implement the Web server.
-
-*  For the Web server, you may have the main thread listening (and accepting) incoming **connection requests**.
+*  For the server, you may have the main thread listening (and accepting) incoming **connection requests**.
    * Any special socket API you need here?
    * How to keep the listening socket receiving new requests?
 
 *  Once you accept a new connection, create a child thread for the new connection.
    * Is the new connection using the same socket as the one used by the main thread?
 
-*  Note that only HTTP 1.0 is required for the basic part of this project. HTTP 1.0 uses non-persistent connection. In other word, for each connection, only two messages are exchanged: a HTTP request and a HTTP response.
-   * Does this assumption simplify the job of the child thread?
+Here are some sample codes:
 
-If you want to approach the problem using asynchronous programming model, here are some hints:
+* A simple server that echoes back anything sent by the client: [server.cpp]({{ site.baseurl }}/hints/server.cpp), [client.cpp]({{ site.baseurl }}/hints/client.cpp)
 
-*  Understand the working mechanism of [`select` socket API](http://linux.die.net/man/2/select). In fact, you can treat `select` as a monitor of all your connections (even the listening socket).
-
-*  Use `select` to figure out what event happened on which connection, and process the event correctly.
-   * how to distinguish the listening socket and the others?
-
-Here is some sample code:
-
-* A simple server that echoes back anything sent by the client: [server.cpp]({{ site.baseurl }}/assets/hints/server.cpp), [client.cpp]({{ site.baseurl }}/assets/hints/client.cpp)
-
-* Domain name resolution: [showip.cpp]({{ site.baseurl }}/assets/hints/showip.cpp)
-
-* A simple multi-thread countdown: [multi-thread.cpp]({{ site.baseurl }}/assets/hints/multi-thread.cpp)
-
-* Asynchronous server using `select`: [async-server.cpp]({{ site.baseurl }}/assets/hints/async-server.cpp), [random-client.cpp]({{ site.baseurl }}/assets/hints/random-client.cpp)
+* A simple multi-thread countdown: [multi-thread.cpp]({{ site.baseurl }}/hints/multi-thread.cpp)
 
 Other resources
 
@@ -156,16 +112,13 @@ Other resources
 
 ## Environment Setup
 
-The best way to guarantee full credit for the project is to do project development using a Ubuntu 14.04-based virtual machine.
+The best way to guarantee full credit for the project is to do project development using a Ubuntu 16.04-based virtual machine.
 
 You can easily create an image in your favourite virtualization engine (VirtualBox, VMware) using the Vagrant platform and steps outlined below.
 
-<!-- , or use [this pre-created VirtualBox image](). -->
+### Set Up Vagrant and Create VM Instance
 
-
-### Set up Vagrant and create VM instance
-
-**Note that all example commands are executed on the host machine (your laptop), e.g., in Terminal.app (or iTerm2.app) on OS X, cmd in Windows, and console or xterm on Linux.  After the last step (`vagrant ssh`) you will get inside the virtual machine and can compile your code there.**
+**Note that all example commands are executed on the host machine (your laptop), e.g., in `Terminal.app` (or `iTerm2.app`) on macOS, `cmd` in Windows, and `console` or `xterm` on Linux.  After the last step (`vagrant ssh`) you will get inside the virtual machine and can compile your code there.**
 
 - Download and install your favourite virtualization engine, e.g., [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
@@ -175,7 +128,7 @@ You can easily create an image in your favourite virtualization engine (VirtualB
 
   * Clone project template
 
-        git clone https://github.com/cawka/spring17-cs118-project1 ~/cs118-proj1
+        git clone https://github.com/cs118/spring17-project1 ~/cs118-proj1
         cd ~/cs118-proj1
 
   * Initialize VM
@@ -196,61 +149,94 @@ You can easily create an image in your favourite virtualization engine (VirtualB
         cd /vagrant
         make
 
-
 ### Notes
 
 * If you want to open another SSH session, just open another terminal and run `vagrant ssh` (or create a new Putty session).
 
 * If you are using Windows, read [this article](http://www.sitepoint.com/getting-started-vagrant-windows/) to help yourself set up the environment.
 
-* The code base contains the basic `Makefile` and two empty files `web-server.cpp` and `web-client.cpp`.
+* The code base contains the basic `Makefile` and two empty files `server.cpp` and `client.cpp`.
 
         $ vagrant ssh
-        vagrant@vagrant-ubuntu-trusty-64:~$ cd /vagrant
-        vagrant@vagrant-ubuntu-trusty-64:/vagrant$ ls
-        Makefile  README.md  Vagrantfile  web-client.cpp  web-server.cpp
+        vagrant@vagrant:~$ cd /vagrant
+        vagrant@vagrant:/vagrant$ ls -a
+        .  ..  client  client.cpp  .git  .gitignore  Makefile  README.md  server  server.cpp  .vagrant  Vagrantfile
 
+* You are now free to add more files and modify the Makefile to make the `server` and `client` full-fledged implementation.
 
-* You are now free to add more files and modify the Makefile to make the `web-server` and `web-client` full-fledged implementation. 
-
-## Submission
+## Submission Requirements
 
 To submit your project, you need to prepare:
 
-1. All your source code and Makefile (no binaries) as `.tar.gz` archive.
+1. A `README.md` file placed in your code that includes:
 
-2. A PDF project report that describes
-   * the high level design of your server and client;
-   * the problems your ran into and how you solved the problems;
-   * additional instructions to build your project (if your project uses some other libraries);
-   * how you tested your code and why.
-   * the contribution of each team member (up to 3 members in one team) and their UID
+    * Your name, UCLA ID
+    * The high level design of your server and client
+    * The problems your ran into and how you solved the problems
+    * List of any additional libraries used
+    * Acknowledgement of any online tutorials or code example (except class website) you have been using.
 
-Put all these above into a package and submit to CCLE.
-   
-Please make sure:
+    **If you need additional dependencies for your project, you must update Vagrant file.**
 
-1. your code can compile
-2. no unnecessary files in the package.
+1. All your source code, `Makefile`, `README.md`, `Vagrantfile`, and `.git` folder with your git repository history as a `.tar.gz` archive.
 
-Otherwise, your will not get any credit.
-   
+    To create the submission, **use the provided Makefile** in the skeleton project.  Just update `Makefile` to include your UCLA ID and then just type
+
+        make tarball
+
+    Then submit the resulting archive to Gradescope.
+
+Before submission, please make sure:
+
+1. Your code compiles
+2. Client and server conforms to the specification
+3. `.tar.gz` archive does not contain temporary or other unnecessary files.  We will automatically deduct points otherwise.
+
+Submissions that do not follow these requirements will not get any credit.
+{: class="bs-callout bs-callout-danger" }
+
 ## Grading
 
 Your code will be first checked by a software plagiarism detecting tool. If we find any plagiarism, you will not get any credit.
 
-Your code will then be automatically tested in some testing scenarios. If your code can pass all our automated test cases, you will get the full credit.
+Your code will then be automatically tested in some testing scenarios.
 
-###  Bonus points
+We will test your server against a "standard" implementation of the client, your client against a "standard" server, as well as your client against your server.  Projects receive full credit only all these checks are passed.
 
-You can have:
+### Grading Criteria
 
-* 1 extra point: if your client/server can handle HTTP request timeout;
-* 2 extra points: if you can implement concurrent Web server using both synchronous and asynchronous programming techniques;
-* <a name="http1.1"></a>2 extra points: if the client and server can support HTTP 1.1 in addition to HTTP 1.0: the client should be able to talk to the server over persistent connections, using pipelines if necessary.
+1. (2.5 pts) At least 3 git commits
+1. (2.5 pts, public test) Client handles incorrect hostname/port
+1. (2.5 pts, public test) Server handles incorrect port
+1. (2.5 pts, public test) Server handles `SIGTERM` / `SIGQUIT` signals
+1. (5 pts, public test) Client connects and starts transmitting a file
+1. (5 pts, public test) Server accepts a connection and start saving a file
+1. (5 pts, public test) Client able to successfully transmit a small file (500 bytes)
+1. (10 pts, 2 private tests) Client able to successfully transmit a medium size file (1 MiB)
+   * sending in large chunks without delays
+   * sending in small chunks, delaying each chunk a bit
+1. (10 pts, 2 private tests) Client able to successfully transmit a large size file (100 MiB)
+   * sending in large chunks without delays
+   * sending in small chunks, delaying each chunk a bit
+1. (5 pts, public test) Server able to receive a small file (500 bytes) and save it in `1.file`
+1. (10 pts, 2 private tests) Server able to receive a medium file (1 MiB bytes) and save it in `1.file`
+   * receiving file sent in large chunks without delays
+   * receiving file sent in small chunks with delays
+1. (10 pts, 2 private tests) Server able to receive a large file (100 MiB bytes) and save it in `1.file`
+   * receiving file sent in large chunks without delays
+   * receiving file sent in small chunks with delays
+1. (10 pts, 1 public and 1 private test) Server can properly receive 10 small files (sent without delays) in `1.file`, `2.file`, ... `3.file`
+   * a single client connects sequentially
+   * 10 clients connect simultaneously (our test will ensure proper ordering of connections)
+1. (5 pts, public test) Client handles abort connection attempt after 10 seconds.
+1. (5 pts, private test) Client aborts connection when server gets disconnected (server app or network connection is down)
+1. (5 pts, private test) Server aborts connection (a file should be created, containing only `ERROR` string) when doesn't receive data from client for more than 10 seconds
+1. (5 pts, private test) Client able to successfully send and server properly receive and save large file over lossy and large delay network (we will use `tc` based emulation.
 
-   
+### Deductions
 
+1. (-5 pts) The submission archive contains temporary or other non-source code file, except `README.md`, `Vagrantfile`, files under `.git` subfolder (and any files from extra credit part).
 
+### Extra Credit
 
-
+1. (2.5 pts) `Dockerfile` and relevant description in `README.md` for deployment of server as a Docker container.

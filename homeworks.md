@@ -4,8 +4,6 @@ title: Homeworks
 group: Homeworks
 ---
 
-# {{ page.title }}
-
 <span class="label label-primary">Note</span>  Homeworks are assigned through [CCLE](https://ccle.ucla.edu/course/view/17S-COMSCI118-1).
 
 <span class="label label-primary">Note</span>  The homeworks must be submitted electronically through [Gradescope](https://gradescope.com/courses/6565) system.  All registered students should have received access to the system.  If not, please contact TAs or the instructor.

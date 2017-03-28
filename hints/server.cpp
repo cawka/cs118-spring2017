@@ -72,7 +72,6 @@ main()
     ss << buf << std::endl;
     std::cout << buf << std::endl;
 
-
     if (send(clientSockfd, buf, 20, 0) == -1) {
       perror("send");
       return 6;
