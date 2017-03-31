@@ -204,10 +204,10 @@ Only one submission per group.
 
 3. Create a tarball 
 
-   cd sr
-   make clean
-   cd ..
-   tar -zcf sr.tgz sr
+       cd sr
+       make clean
+       cd ..
+       tar -zcf sr.tgz sr
 
 4. Upload sr.tgz to CCLE. 
 
