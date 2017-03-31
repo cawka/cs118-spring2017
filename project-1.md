@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Project 1: Simple File Transfer over TCP"
+title: "Project 1: \"Accio\" File using TCP"
 group: "Project 1"
 ---
 
@@ -39,7 +39,7 @@ The server application MUST be compiled into `server` binary, accepting two comm
 - `<PORT>`: port number on which server will listen on connections.  The server must accept connections coming from any interface.
 - `<FILE-DIR>`: directory name where to save the received files.
 
-For example, the command below should start the Web server listening on port `5000` and saving received files in the directory `/save`.
+For example, the command below should start the server listening on port `5000` and saving received files in the directory `/save`.
 
     $ ./server 5000 /save
 
@@ -49,9 +49,9 @@ For example, the command below should start the Web server listening on port `50
 
 - The server should gracefully process incorrect port number and exit with a non-zero error code (you can assume that the folder is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
-- The server should exit with code 0 when receiving `SIGQUIT`/`SIGTERM` signal
+- The server should exit with code zero when receiving `SIGQUIT`/`SIGTERM` signal
 
-- The server should be able to accept and process multiple connection from clients
+- The server should be able to accept and process multiple connection from clients at the same time
 
 - The server must count all established connections (1 for the first connect, 2 for the second, etc.).  The received file over the connection must be saved to `<FILE-DIR>/<CONNECTION-ID>.file` file  (e.g., `/save/1.file`, `/save/2.file`, etc.).  If the client doesn't send any data during gracefully terminated TCP connection, the server should create an empty file with the name that corresponds to the connection number.
 
@@ -79,7 +79,7 @@ For example, the command below should result in connection to a server on the sa
 
 - The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
-- Client application should exit with code 0 after successful transfer of the file to server.  It should support transfer of files that are up to 100 MiB file.
+- Client application should exit with code zero after successful transfer of the file to server.  It should support transfer of files that are up to 100 MiB file.
 
 - Client should handle connection and transmission errors.  The reaction to network or server errors should be **no longer that 10 seconds**.  This includes connection and transmission stages: (1) timeout to connect to server should be no longer than 10 seconds, and (2) reaction to no data from server (not being able to send more data to server) should be no longer than 10 seconds, after which connection should be aborted.
 

@@ -32,11 +32,11 @@ navbar_list:
   link: /syllabus.html
 - name: Homeworks
   link: /homeworks.html
-- name: Project 1
+- name: Project 1 (Acio)
   link: /project-1.html
-# - name: Project 2
-#   link: /project-2.html
-# - name: Project 3
+- name: Project 2 (Confundo)
+  link: /project-2.html
+# - name: Project 3 (Riddikulus)
 #   link: /project-3.html
 
 course_info:
