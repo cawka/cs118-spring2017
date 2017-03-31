@@ -107,10 +107,72 @@ Once you've correctly implemented the router, you can visit the web page located
 
 ### Dealing with Protocol Headers
 
-Within the `sr` framework you will be dealing directly with raw Ethernet packets, which includes Ethernet header and IP header. There are a number of online resources which describe the protocol headers in detail. For example, find IP, ARP, and Ethernet on [www.networksorcery.com](http://www.networksorcery.com). The stub code itself provides data structures in sr_protocols.h for IP, ARP, and Ethernet headers, which you can use. You can also choose to use standard system header files found in /usr/include/net and /usr/include/netinet as well.
+Within the `sr` framework you will be dealing directly with raw Ethernet packets, which includes Ethernet header and IP header. There are a number of online resources which describe the protocol headers in detail. For example, find IP, ARP, and Ethernet on [www.networksorcery.com](http://www.networksorcery.com). The stub code itself provides data structures in sr_protocols.h for IP, ARP, and Ethernet headers, which you can use. You can also choose to use standard system header files found in `/usr/include/net and /usr/include/netinet` as well.
 
-With a pointer to a packet (uint8_t *), you can cast it to an Ethernet header pointer (struct sr_ethernet_hdr *) and access the header fields. Then move the pointer pass the Ethernet header and cast it to a pointer to ARP header or IP header, and so on. This is how you access different protocol headers.
+With a pointer to a packet (`uint8_t *`), you can cast it to an Ethernet header pointer (`struct sr_ethernet_hdr *`) and access the header fields. Then move the pointer pass the Ethernet header and cast it to a pointer to ARP header or IP header, and so on. This is how you access different protocol headers.
 
+### Inspecting Packets with `tcpdump`
+
+`tcpdump` can server as an important debugging tool. As you work with the `sr` router, you will want to take a look at the packets that the router is sending and receiving on the wire. The easiest way to do this is by logging packets to a file and then displaying them using a program called `tcpdump`.
+
+First, tell your router to log packets to a file in the `tcpdump` format:
+        
+        ./sr -t -l logfile
+
+As the router runs, it will record all the packets that it receives and sends (including headers) into the file named `logfile`. After stopping the router, you can use `tcpdump` to display the contents of the `logfile`:
+
+        tcpdump -r logfile -e -vvv –xx
+
+The `-r` switch tells `tcpdump` to read logfile, `-e` tells `tcpdump` to print the headers of the packets, not just the payload, `-vvv` makes the output very verbose, and `-xx` displays the content in hex, including the link-level (Ethernet) header.
+
+**Learn to read the hexadecimal output from `tcpdump`. It shows you the packet content including the Ethernet header. You can see how a correctly formatted ARP request (coming from the gateway) looks like, and check where your packet might have problem.**
+
+### Troubleshooting of the Topology
+
+You can view the status of your topology nodes
+        
+        ./vnltopo.sh gateway status
+        ./vnltopo.sh vrhost status
+        ./vnltopo.sh server1 status
+        ./vnltopo.sh server2 status
+
+If your topology does not work correctly, you can attempt to reset it, or notify the TA.
+
+        ./vnltopo.sh gateway run
+        ./vnltopo.sh server1 run
+        ./vnltopo.sh server2 run
+
+## Task Description
+
+### Milestone 1: Answering ARP Requests
+
+When the router is running and you initiate web access to one of the servers, the very first packet that the router receives will be an ARP request, sent by the gateway node to the router asking the Ethernet address of the router.
+
+In the first milestone, you need to
+
+- Get familiar with the `sr` code
+- Process the ARP request
+- Send back a correct ARP reply
+- Receive the next packet, which should be a TCP SYN packet going to one of the web servers.
+
+The correct behavior can be verified by logging the packets and viewing them with `tcpdump`.
+
+### Milestone 2: Implementing a working router
+
+In the 2nd milestone, you'll need to implement the rest of ARP and the basic IP forwarding. More specifically the required functionalities are listed as follows:
+
+1. The router correctly handles ARP requests and replies. When it receives an ARP request, it can send back a correctly formatted ARP reply. When it wants to send an IP to the nexthop and doesn't know the nexthop's Ethernet address, it can send an ARP request and parse the returned ARP reply to get the Ethernet address.
+2. The router maintains an ARP cache whose entries should be refreshed every time a matching packet passes, and should be removed after 15s of no activity
+3. The router can successfully forward packets between the gateway and the application servers. When an IP packet arrives, the router should do the following:
+
+    - Check if the destination address is itself. If yes, discard the packet.
+    - Decrement the TTL by 1. If the result is 0, discard the packet. Otherwise, update the checksum field. Refer the textbook for the IP Checksum algorithm.
+    - Look up the routing table to find out the IP address of the nexthop. 
+    - Check ARP cache for the Ethernet address of the nexthop. If needed, it should send an ARP request to get the Ethernet address. 
+    - While the router is waiting for ARP reply, it should store incoming packets that use the same nexthop. 
+    - After the ARP reply is received, save the information in ARP cache, and send out all the packets that are waiting for the ARP reply.
+4. Using the router, you can download files from the servers.
+5. The IP checksum algorithm is covered in this course. A great way to test if your checksum function is working is to run it on an arriving packet. If you get the same checksum that is already contained in the packet, then your function is working. Remember to zero out the checksum field when you feed the packet to your checksum calculation. If the checksum is wrong, `tcpdump` will complain.
 
 ## Grading
 
@@ -120,7 +182,15 @@ You can work by yourself or in a group of two students. No group can have more t
 
 Your code must be written in C or C++ and use the stub code.
 
-Your router will be graded using vagrant VMs only.
+
+We will test your code by two ways:
+
+1. Access the web server from the client. E.g., 
+
+       wget http://ServerIP:16280 (this retrieves the web front page from the server.)
+       wget http://ServerIP:16280/64MB.bin (this retrieves a 64MB file.)
+
+2. Log packets and analyze the router’s behavior. E.g., Retrieve a web page, then wait for 20s, then retrieve the page again. From the traffic log, we should see ARP request/reply at the beginning of each retrieval, but not during the retrieval because of ARP cache. We will also use this way to verify TTL decrement and checksum.
 
 Grading is based on functionality (i.e., what works and what doesn’t), not the source code (i.e., what has been written). For example, when a required functionality doesn’t work, its credit will be deducted, regardless of whether it’s caused by a trivial oversight in the code vs. a serious design flaw.
 
@@ -128,18 +198,18 @@ Grading is based on functionality (i.e., what works and what doesn’t), not the
 
 Only one submission per group.
 
-1. Name your working directory “topXX”, where XX is the topology ID in your assignment.
+1. Name your working directory "sr".
 
-2. Make sure this directory has all the source files and the Makefile. Include a README.txt file listing the names and emails of group members, and anything you want us to know about your router. Especially when it only works partially, it helps to list what works and what not.
+2. Make sure this directory has all the source files and the Makefile. Include a README file, listing the names and emails of group members, and anything you want us to know about your router. Especially when it only works partially, it helps to list what works and what not.
 
 3. Create a tarball 
 
-   cd topXX
+   cd sr
    make clean
    cd ..
-   tar -zcf topXX.tgz topXX
+   tar -zcf sr.tgz sr
 
-4. Upload topXX.tgz onto D2L. 
+4. Upload sr.tgz to CCLE. 
 
 
 
