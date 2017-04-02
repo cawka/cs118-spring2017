@@ -11,7 +11,7 @@ gems:
 
 bootstrap:
   assets: true
-  
+
 url: http://web.cs.ucla.edu
 baseurl: /classes/spring17/cs118
 
@@ -20,7 +20,7 @@ permalink: /:title.html
 
 # Configuration for site
 title: "CS118: Computer Network Fundamentals - Spring 2017 (UCLA)"
-description: 
+description:
 author: Alexander Afanasyev
 email:
 
@@ -40,44 +40,44 @@ navbar_list:
 #   link: /project-3.html
 
 course_info:
-  times: Mondays/Wednesdays 8am-9:50am
+  times: Mondays/Wednesdays, 8am-9:50am
   room: ROLFE 1200
   name: Alex Afanasyev
   contact: aa at cs.ucla.edu
-  office_hours: Wednesday 5:30pm-6:30pm (BH 4809), other times by appointment 
+  office_hours: Wednesdays, 5:30pm-6:30pm (BH 4809), other times by appointment
 
   homeworks_due: Wednesday of the week following the assignment, 11pm
-  midterm: TBD
-  
-  final: Wednesday, TBD, 8am-9:50am
-  final_room: ROLFE 1200
+  midterm: Wednesday, May 3, 2017, 8am-9:50am
+
+  final: Monday, June 12, 2017, 6:30pm-9:30pm
+  final_room: TBD
 
   sections:
-    - times: Friday / 10:00am-11:50am
+    - times: Fridays / 10:00am-11:50am
       room: BH 5264
       name: Seungbae Kim
       contact: sbkim at cs.ucla.edu
       office_hours: TBD
 
-    - times: Friday / 12:00pm-1:50pm
+    - times: Fridays / 12:00pm-1:50pm
       room: BH 5264
       name: Haitao Zhang
       contact: haitao at cs.ucla.edu
       office_hours: TBD
-    
-    - times: Friday / 2:00pm-3:50pm
+
+    - times: Fridays / 2:00pm-3:50pm
       room: BH 5249
       name: Zengwen Yuan
       contact: zyuan at cs.ucla.edu
       office_hours: Wednesday 10:00am-12:00pm
 
-    - times: Friday / 8:00am-9:50am
+    - times: Fridays / 8:00am-9:50am
       room: GEOLOGY 4660
       name: Pranav Sodhani
       contact: sodhanipranav at cs.ucla.edu
-      office_hours: TBD
+      office_hours: Mondays and Wednesdays 10:00am-11:00am (BH 2432)
 
   projects:
-    - deadline: TBD
-    - deadline: TBD
-    - deadline: TBD
+    - deadline: Sunday, April 23, 2017, 11pm PDT
+    - deadline: Sunday, May 21, 2017, 11pm PDT
+    - deadline: Sunday, June 11, 2017, 11pm PDT

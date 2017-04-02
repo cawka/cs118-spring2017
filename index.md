@@ -14,3 +14,7 @@ This course provides an introduction to fundamental concepts in the design and i
 
 - First lecture will be on April 3, 2017
 - The classroom has changed to **ROLFE 1200**
+
+## Class Calendar
+
+<iframe src="https://calendar.google.com/calendar/embed?mode=AGENDA&amp;height=400&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=og23t8038qoha5eiitm0o30chk%40group.calendar.google.com&amp;color=%23691426&amp;ctz=America%2FLos_Angeles" style="border-width:0" width="450" height="400" frameborder="0" scrolling="no"></iframe>

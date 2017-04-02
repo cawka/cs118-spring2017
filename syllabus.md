@@ -46,7 +46,7 @@ In addition to the textbook, students expected to do their own research online, 
   </table>
 </div>
 
-- Weekly homework will be assigned after the 2nd lecture every week and must be submitted by 11:00pm next Thursday.
+- Weekly homeworks
 - Midterm Exam
 - Final Exam
 - Three programming projects
