@@ -55,9 +55,9 @@ For example, the command below should start the server listening on port `5000` 
 
 - The server must count all established connections (1 for the first connect, 2 for the second, etc.).  The received file over the connection must be saved to `<FILE-DIR>/<CONNECTION-ID>.file` file  (e.g., `/save/1.file`, `/save/2.file`, etc.).  If the client doesn't send any data during gracefully terminated TCP connection, the server should create an empty file with the name that corresponds to the connection number.
 
-- The server must assume error if no data received from the client for over 10 seconds.  It should abort the connection and write a single `ERROR` string into the corresponding file.
+- The server must assume error if no data received from the client for over `10 seconds`.  It should abort the connection and write a single `ERROR` string (without end-of-line/carret-return symbol) into the corresponding file.  Note that any partial input must be discarded.
 
-- The server should be able to accept and save files up to 100 MiB
+- The server should be able to accept and save files up to `100 MiB`
 
 ### Client Application Specification
 
@@ -81,7 +81,12 @@ For example, the command below should result in connection to a server on the sa
 
 - Client application should exit with code zero after successful transfer of the file to server.  It should support transfer of files that are up to 100 MiB file.
 
-- Client should handle connection and transmission errors.  The reaction to network or server errors should be **no longer that 10 seconds**.  This includes connection and transmission stages: (1) timeout to connect to server should be no longer than 10 seconds, and (2) reaction to no data from server (not being able to send more data to server) should be no longer than 10 seconds, after which connection should be aborted.
+- Client should handle connection and transmission errors.  The reaction to network or server errors should be **no longer that 10 seconds**:
+
+    * Timeout to connect to server should be no longer than `10 seconds`
+    * Timeout for not being able to send more data to server (not being able to write to send buffer) should be no longer than `10 seconds`.
+
+    Whenever timeout occurs, the client should abort the connection, print an error string starting with `ERROR:` to standard error (`std::cerr`), and exit with non-zero code.
 
 ## A Few Hints
 
@@ -89,7 +94,7 @@ General hints:
 
 *  If you are running the client and the server on the same machine, you can use "localhost" (without quotes) or "127.0.0.1" (without quotes) as the name of the server.
 
-*  You should NOT use port numbers in the range of 0-1024 (these are reserved ports).
+*  You should NOT use port numbers in the range of 0-1023 (these are reserved ports).  Test your client/server code by running as non-privileged user.  This will allow you to capture reserved port restrictions from the kernel.
 
 Here are some hints of using multi-thread techniques to implement the server.
 
