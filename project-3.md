@@ -209,7 +209,7 @@ A routing table file that corresponds to the routing table for the router node i
 ## The starter source code
 You can build and run the starter code as follows:
 
-        $ cd ~/cs144_lab3/router/
+        $ cd ~/lab3/router/
         $ make
         $./sr
  
