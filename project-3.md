@@ -23,7 +23,9 @@ In this project, you will be writing a simple router with a static routing table
 
 Your router will route real packets from a emulated host (client) to two emulated application servers (http server 1/2) sitting behind your router. The application servers are each running an HTTP server. When you have finished the forwarding path of your router, you should be able to access these servers using regular client software. In addition, you should be able to ping and traceroute to and through a functioning Internet router. A sample routing topology is shown below:
 
-![topo-sample](/figures/topo-sample.png)
+<p align="center">
+<img src="./figures/topo-sample.png" width="360">
+</p>
 
 If the router is functioning correctly, all of the following operations should work:
 
@@ -51,17 +53,23 @@ If you use [VirtualBox](https://www.virtualbox.org/) (Version 4.3.20 or later is
 
 If nothing is listed, you need to first add an adapter by clicking on the +.
 
-![add-adapter](/figures/add-adapter.png)
+<p align="center">
+<img src="./figures/add-adapter.png" width="480">
+</p>
 
 Check that the adapter configuration looks like this (the adapter name may be different):
 
-![adapter-status](/figures/adapter-status.png)
+<p align="center">
+<img src="./figures/adapter-status.png" width="480">
+</p>
 
 If the IPv4 address is different, you may want to change it to the same value as us to avoid possible conflicts later on.
 
 You will then need to enable the DHCP server for this adapter. Use the following settings:
 
-![dhcp](/figures/dhcp.png)
+<p align="center">
+<img src="./figures/dhcp.png" width="480">
+</p>
 
 This will ensure that your VM receives an IPv4 address within the range **192.168.56.10 - 192.168.56.20** (although it’s okay if it doesn’t).
 
