@@ -12,6 +12,7 @@ This course provides an introduction to fundamental concepts in the design and i
 
 ## Course Announcements
 
+- <span class="label label-primary">April 3, 2017</span>: Please submit the signed Academic Integrity and Honesty agreement by April 9, 2017.  Otherwise, your course work will not be graded.
 - First lecture will be on April 3, 2017
 - The classroom has changed to **ROLFE 1200**
 

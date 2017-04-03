@@ -57,25 +57,25 @@ course_info:
       room: BH 5264
       name: Seungbae Kim
       contact: sbkim at cs.ucla.edu
-      office_hours: TBD
+      office_hours: Wednesdays / 3:30pm-5:30pm <b>(BH 2432)</b>
 
     - times: Fridays / 12:00pm-1:50pm
       room: BH 5264
       name: Haitao Zhang
       contact: haitao at cs.ucla.edu
-      office_hours: TBD
+      office_hours: Tuesdays / 2:00pm-4:00pm <b>(BH 2432)</b>
 
     - times: Fridays / 2:00pm-3:50pm
       room: BH 5249
       name: Zengwen Yuan
       contact: zyuan at cs.ucla.edu
-      office_hours: Wednesday 10:00am-12:00pm
+      office_hours: Wednesdays / 10:00am-12:00pm <b>(BH 2432)</b>
 
     - times: Fridays / 8:00am-9:50am
       room: GEOLOGY 4660
       name: Pranav Sodhani
       contact: sodhanipranav at cs.ucla.edu
-      office_hours: Mondays and Wednesdays 10:00am-11:00am (BH 2432)
+      office_hours: Mondays / 10:00am-12:00pm <b>(BH 2432)</b>
 
   projects:
     - deadline: Sunday, April 23, 2017, 11pm PDT

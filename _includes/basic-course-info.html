@@ -9,7 +9,7 @@
       <td><b>Discussion Sections</b></td>
       <td>
         {% for section in course.sections %}
-          DIS {{ forloop.index }}: {{ section.times }}, <b>{{ section.room }}</b> ({{ section.name }})<br/>
+          DIS {{ forloop.index }}: {{ section.times }}, <b>{{ section.room }}</b><br/><ul><li>({{ section.name }}, {{ section.contact }})</li></ul>
         {% endfor %}
       </td>
     </tr>
@@ -24,10 +24,10 @@
       <td>{{ course.office_hours }}</td>
     </tr>
     <tr>
-      <td><b>TAs</b></td>
+      <td><b>TA Office Hours</b></td>
       <td>
         {% for section in course.sections %}
-          {{ section.name }} ({{ section.contact }}): {{ section.times }}, <b>{{ section.room }}</b><br/>
+          DIS {{ forloop.index }} ({{ section.name }}): {{ section.office_hours }}<br/>
         {% endfor %}
       </td>
     </tr>
