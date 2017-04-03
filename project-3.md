@@ -17,199 +17,323 @@ You are encouraged to host your code in private repositories on [GitHub](https:/
 {: class="alert alert-danger"}
 
 ## Overview
-In this project, you will implement a functional IP Simple Router (`sr`) that is able to route real traffic. 
+This project is based on the Lab 3 of Stanford CS144.
 
-You will be given an incomplete router to start with. What you need to do is to implement the Address Resolution Protocol (ARP), basic IP forwarding, and ICMP ping and traceroute. A correctly implemented `sr` should be able to forward traffic for any IP applications, including downloading files between a web browser and an Apache server via your router. We provide you with the skeleton code for the `sr`, which doesn’t implement any packet processing or forwarding, and will be filled in by you.
+In this project, you will be writing a simple router with a static routing table. Your router will receive raw Ethernet frames. It will process the packets just like a real router, then forward them to the correct outgoing interface. We'll make sure you receive the Ethernet frames; your job is to create the forwarding logic so packets go to the correct interface.
 
-draw a topology figure here.
+Your router will route real packets from a emulated host (client) to two emulated application servers (http server 1/2) sitting behind your router. The application servers are each running an HTTP server. When you have finished the forwarding path of your router, you should be able to access these servers using regular client software. In addition, you should be able to ping and traceroute to and through a functioning Internet router. A sample routing topology is shown below:
 
-This is the network topology, and `vrhost` is the router that you will work on. The router connects a client to two subnets, each of which has two web servers in it. The goal of this project is to implement essential functionality in the router so that you can use a regular web browser on the client to access any of the four web servers, and also be able to ping and traceroute the servers. 
+If the router is functioning correctly, all of the following operations should work:
 
-## Setting Up Environment 
+- Pinging from the client to any of the router's interfaces (192.168.2.1, 172.64.3.1, 10.0.1.1).
+- Tracerouting from the client to any of the router's interfaces
+- Pinging from the client to any of the app servers (192.168.2.2, 172.64.3.10)
+- Tracerouting from the client to any of the app servers
+- Downloading a file using HTTP from one of the app servers
 
-I need some time to figure out how to write the script to set up the environment.
+Additional requirements are laid out in the 'Requirements' section.
 
-## Getting Started
+## Mininet
+ 
+This assignment runs on top of Mininet which was built at Stanford. Mininet allows you to emulate a topology on a single machine. It provides the needed isolation between the emulated nodes so that your router node can process and forward real Ethernet frames between the hosts like a real router. You don't have to know how Mininet works to complete this assignment, but more information about Mininet (if you're curious) is available [here](http://mininet.org/).
 
-Start all VMs using vagrant, log onto the router. Download the `sr` code (sr.tar) from CCLE. To run the code, untar the code package `tar xvf sr.tar`, and compile the code by `make`. 
+## Environment Setup
+ 
+There are two ways to setup environment:
 
-Useful commands:
+- import a virtual machine image (on which all tools have been set up) to your VirtualBox host
+- build tools on your own native system
 
-- `./sr -t`: start the router.
+### Setup Using VM Image
+If you use [VirtualBox](https://www.virtualbox.org/) (Version 4.3.20 or later is preferred) as the host, we have already made a VM image (add the VM image here) for you. Before installing the image, you need to make sure a **Host-only network vboxnet0** has been created. To do that, click Preference -> Network, if there is no **vboxnet0** in the Host-only network list, add one, so it would look like this:
 
-- `./sr -r routing_table_file`: allows you to specify the routing table to load. By default, it loads the routing table from file `rtable` (included in configuration files).
+Next, double click the downloaded image file, you will see:
 
-- `./sr -h`: print the list of acceptable command-line options.
+Then click **Import**, and the VM will be imported to your VirtualBox host. 
 
-The routing table is read from the file `rtable`. Each line of the file has four fields: 
+Then select **cs118-vm**, click **start**, the VM will be started. **Login ID: cs118, password: cs118**
 
-        Destination Network, gateway(i.e., nexthop), mask, interface
+### SSHing into the VM
 
-A valid rtable file may look as follows: (Note: You should not assume any particular order of the routing table entries. E.g., the default route may be the first, second, or the third entry.)
+SSHing into the VM (the guest OS) from your computer (the host OS) allows you to access the VM through a terminal on your host OS. After setting up the Network Settings (above), you can power on the VM (**cs118 / cs118**). Open a terminal to check its IP address:
 
-        0.0.0.0 172.24.74.17 0.0.0.0  eth0
-        172.24.74.64 0.0.0.0 255.255.255.248  eth1
-        172.24.74.80 0.0.0.0 255.255.255.248  eth2
+        ifconfig
+        
+This will spit out a list with **eth0, eth1, lo,** etc. Look for an IP address of the form **192.168.56.\*** under inet addr. For example:
 
-0.0.0.0 as the destination means that this is the default route; 0.0.0.0 as the gateway means that it is the same as the destination address of the incoming packet.
+        % ifconfig
+        ...
+        eth0        Link encap:Ethernet  HWaddr 00:0c:29:c2:5f:16
+                    inet addr:192.168.56.11  Bcast:182.168.56.255  Mask:255.255.255.0
+                    ...
+                   
+Most likely it will appear under **eth0** or **eth1**. If you cannot find the right IP address, and one of **eth0** or **eth1** is missing, run this command:
 
-On connection the interface information will be printed and looks like the following: 
+        sudo dhclient eth0
 
+(or **eth1**, depending on which one is missing):
+
+        sudo dhclient eth1
+
+If you do **ifconfig** again, an IP address of the form **192.168.56.\*** should appear.
+
+Then, you can use **SSH** on your local machine (Mac or Linux) to login the VM by typing the following in your terminal (on the Mac/Linux side):
+
+        ssh cs118@192.168.56.11 (or whatever IP address ifconfig gave you)
+
+On Windows, you will need to use third-party software (e.g. MobaXterm, PuTTY, or Cygwin).
+
+## Get Started
+
+You can test if you are all set by following steps:
+
+- Run Mininet emulator
+  open an terminal on your local machine (**not the VM**), use SSH to login the VM. Then
+  
+        $ cd ~/lab3/
+        $ ./run_mininet.sh
+  You should be able to see something like this:
+  
+        *** Shutting down stale SimpleHTTPServers 
+        *** Shutting down stale webservers 
+        server1 192.168.2.2
+        server2 172.64.3.10
+        client 10.0.1.100
+        sw0-eth1 192.168.2.1
+        sw0-eth2 172.64.3.1
+        sw0-eth3 10.0.1.1
+        *** Successfully loaded ip settings for hosts
+        {'server1': '192.168.2.2', 'sw0-eth3': '10.0.1.1', 'sw0-eth1': '192.168.2.1', 'sw0-eth2': '172.64.3.1', 'client': '10.0.1.100', 'server2': '172.64.3.10'}
+        *** Creating network
+        *** Creating network
+        *** Adding controller
+        *** Adding hosts:
+        client server1 server2
+        *** Adding switches:
+        sw0 
+        *** Adding links:
+        (client, sw0) (server1, sw0) (server2, sw0) 
+        *** Configuring hosts
+        client server1 server2 
+        *** Starting controller
+        *** Starting 1 switches
+        sw0 
+        *** setting default gateway of host server1
+        server1 192.168.2.1
+        *** setting default gateway of host server2
+        server2 172.64.3.1
+        *** setting default gateway of host client
+        client 10.0.1.1
+        *** Starting SimpleHTTPServer on host server1 
+        *** Starting SimpleHTTPServer on host server2 
+        *** Starting CLI:
+        mininet> 
+ 
+   Keep this terminal open, as you will need the mininet command line for debugging. 
+ - Run POX Controller.
+   Now, open another terminal on your local machine (**not the VM**), use SSH to login the VM.
+
+        $ cd ~/lab3/
+        $ ./run_pox.sh
+        
+   You should be able to see something like this:
+   
+        $ POX 0.0.0 / Copyright 2011 James McCauley
+        DEBUG:.home.ubuntu.cs144_lab3.pox_module.cs144.ofhandler:*** ofhandler: Successfully loaded ip settings for hosts
+        {'server1': '192.168.2.2', 'sw0-eth3': '10.0.1.1', 'sw0-eth1': '192.168.2.1', 'sw0-eth2': '172.64.3.1', 'client':      '10.0.1.100', 'server2': '172.64.3.10'}
+        INFO:.home.ubuntu.cs144_lab3.pox_module.cs144.srhandler:created server
+        DEBUG:.home.ubuntu.cs144_lab3.pox_module.cs144.srhandler:SRServerListener listening on 8888
+        DEBUG:core:POX 0.0.0 going up...
+        DEBUG:core:Running on CPython (2.7.3/Aug 1 2012 05:14:39)
+        INFO:core:POX 0.0.0 is up.
+        This program comes with ABSOLUTELY NO WARRANTY. This program is free software,
+        and you are welcome to redistribute it under certain conditions.
+        Type 'help(pox.license)' for details.
+        DEBUG:openflow.of_01:Listening for connections on 0.0.0.0:6633
+        Ready.
+        POX>
+  **Please note that you have to wait the Mininet to automatically connect to the POX controller before you continue to the next step.** Once the Mininet connected, you will see the following output:
+        
+        INFO:openflow.of_01:[Con 1/249473472573510] Connected to e2-e5-11-b6-b0-46
+        DEBUG:.home.ubuntu.cs144_lab3.pox_module.cs144.ofhandler:Connection [Con 1/249473472573510]
+        DEBUG:.home.ubuntu.cs144_lab3.pox_module.cs144.srhandler:SRServerListener catch RouterInfo even, info={'eth3': ('10.0.1.1', '86:05:70:7e:eb:56', '10Gbps', 3), 'eth2': ('172.64.3.1', 'b2:9e:54:d8:9d:cd', '10Gbps', 2), 'eth1': ('192.168.2.1', '36:61:7c:4f:b6:7b', '10Gbps', 1)}, rtable=[]
+ 
+  Keep the POX running. 
+- Test the connectivity of the environment
+  Now, open the third terminal on your local machine (**not the VM**), use SSH to login the VM.
+  
+        $ cd ~/lab3/
+        $ ./sr_solution
+  You should be able to see something like this:
+ 
+        Loading routing table from server, clear local routing table.
+        Loading routing table
+        ---------------------------------------------
+        Destination Gateway Mask Iface
+        10.0.1.100 10.0.1.100 255.255.255.255 eth3
+        192.168.2.2 192.168.2.2 255.255.255.255 eth1
+        172.64.3.10 172.64.3.10 255.255.255.255 eth2
+        ---------------------------------------------
+        Client ubuntu connecting to Server localhost:8888
+        Requesting topology 0
+        successfully authenticated as ubuntu
+        Loading routing table from server, clear local routing table.
+        Loading routing table
+        ---------------------------------------------
+        Destination Gateway Mask Iface
+        10.0.1.100 10.0.1.100 255.255.255.255 eth3
+        192.168.2.2 192.168.2.2 255.255.255.255 eth1
+        172.64.3.10 172.64.3.10 255.255.255.255 eth2
+        ---------------------------------------------
         Router interfaces:
-        eth0    HWaddr c6:31:9f:bb:4b:6e
-            inet addr 172.29.0.9
-        eth1    HWadd rcb:6c:4f:12:a5:2d
-            inet addr 172.29.0.10
-        eth2    HWaddr 85:e4:4d:99:e1:2c
-            inet addr 172.29.0.12
-
-To test if the router is actually receiving packets, try access one of the web servers by running the following command on the client:
-
-        wget http://ServerIP:16280
-
-where ServerIP is the IP of one of the servers. `sr` should print out that it has received a packet. However, `sr` will not do anything with the packet, so you will not see any reply and wget will time out.
-
-## Hints for Developing the Router
-
-### Important Data Structures
-The Router (`sr_router.h`): The full context of the router is housed in the struct `sr_instance` (`sr_router.h`). `sr_instance` contains information about topology the router is routing for as well as the routing table and the list of interfaces.
-
-Interfaces (`sr_if.c`, `sr_if.h`): The `sr` code creates a linked-list of interfaces, `if_lis`t, in the router instance. Utility methods for handling the interface list can be found at `sr_if.h`, `sr_if.c`. Note that IP addresses are stored in network order, so you shouldn't apply htonl() when copying an address from the interface list to a packet header.
-
-The Routing Table (`sr_rt.c`, `sr_rt.h`): The routing table in the stub code is read from a file (default filename 'rtable', can be set with command line option -r) and stored in a linked-list, `struct sr_rt * routing_table`, as a member of the router instance.
-
-### The First Methods to Get Acquainted With
-
-The two most important methods for developers to get familiar with are:
-
-in `sr_router.c`
-
-        void sr_handlepacket(struct sr_instance* sr, 
-                uint8_t * packet /* lent */,
-                unsigned int len,
-                char* interface /* lent */)
-                
-This method is invoked each time a packet is received. The *packet points to the packet buffer which contains the full packet including the Ethernet header (but without Ethernet preamble and CRC). The length of the packet and the name of the receiving interface are also passed into the method as well.
-
-in `sr_vns_comm.c`
-
-        int sr_send_packet(struct sr_instance* sr /* borrowed */, 
-                uint8_t* buf /* borrowed */ ,
-                unsigned int len, 
-                const char* iface /* borrowed */)
-
-This method allows you to send out an Ethernet packet of certain length ('len'), via the outgoing interface 'iface'. Remember that the packet buffer needs to start with an Ethernet header.
-
-**Thus the `sr` code already implemented receiving and sending packets. What you need to do is to fill in `sr_handlepacket( )` with packet processing that implements ARP and IP forwarding.**
-
-### Downloading Files from Web Servers
-Once you've correctly implemented the router, you can visit the web page located at `http://ServerIP:16280/` by using GUI browser, text-based browser like lynx, or command-line tools such as curl and wget, from the client. 'ServerIP' is the IP address of one of your servers. The application servers serve some files via HTTP, FTP, and also host a simple UDP service. You will see how to access them when you get to the front web page.
-
-### Dealing with Protocol Headers
-
-Within the `sr` framework you will be dealing directly with raw Ethernet packets, which includes Ethernet header and IP header. There are a number of online resources which describe the protocol headers in detail. For example, find IP, ARP, and Ethernet on [www.networksorcery.com](http://www.networksorcery.com). The stub code itself provides data structures in sr_protocols.h for IP, ARP, and Ethernet headers, which you can use. You can also choose to use standard system header files found in `/usr/include/net and /usr/include/netinet` as well.
-
-With a pointer to a packet (`uint8_t *`), you can cast it to an Ethernet header pointer (`struct sr_ethernet_hdr *`) and access the header fields. Then move the pointer pass the Ethernet header and cast it to a pointer to ARP header or IP header, and so on. This is how you access different protocol headers.
-
-### Inspecting Packets with `tcpdump`
-
-`tcpdump` can server as an important debugging tool. As you work with the `sr` router, you will want to take a look at the packets that the router is sending and receiving on the wire. The easiest way to do this is by logging packets to a file and then displaying them using a program called `tcpdump`.
-
-First, tell your router to log packets to a file in the `tcpdump` format:
+        eth3 HWaddr86:05:70:7e:eb:56
+        inet addr 10.0.1.1
+        eth2 HWaddrb2:9e:54:d8:9d:cd
+        inet addr 172.64.3.1
+        eth1 HWaddr36:61:7c:4f:b6:7b
+        inet addr 192.168.2.1
+        <-- Ready to process packets -->
+ 
+  Then, go back to the first terminal you can use following three commands to test:
         
-        ./sr -t -l logfile
-
-As the router runs, it will record all the packets that it receives and sends (including headers) into the file named `logfile`. After stopping the router, you can use `tcpdump` to display the contents of the `logfile`:
-
-        tcpdump -r logfile -e -vvv –xx
-
-The `-r` switch tells `tcpdump` to read logfile, `-e` tells `tcpdump` to print the headers of the packets, not just the payload, `-vvv` makes the output very verbose, and `-xx` displays the content in hex, including the link-level (Ethernet) header.
-
-**Learn to read the hexadecimal output from `tcpdump`. It shows you the packet content including the Ethernet header. You can see how a correctly formatted ARP request (coming from the gateway) looks like, and check where your packet might have problem.**
-
-### Troubleshooting of the Topology
-
-You can view the status of your topology nodes
+        mininet> client ping -c 3 192.168.2.2
+        mininet> client traceroute -n 192.168.2.2
+        mininet> client wget http://192.168.2.2
         
-        ./vnltopo.sh gateway status
-        ./vnltopo.sh vrhost status
-        ./vnltopo.sh server1 status
-        ./vnltopo.sh server2 status
+## Starter Code
+ 
+You should now have all the pieces needed to build and run the router:
 
-If your topology does not work correctly, you can attempt to reset it, or notify the TA.
+A routing table file that corresponds to the routing table for the router node in that topology, which we'll call rtable.
 
-        ./vnltopo.sh gateway run
-        ./vnltopo.sh server1 run
-        ./vnltopo.sh server2 run
+## The starter source code
+You can build and run the starter code as follows:
 
-## Task Description
+        $ cd ~/cs144_lab3/router/
+        $ make
+        $./sr
+ 
+### Logging Packets
+You can log the packets receives and generated by your SR program by using the "-l" parameter with your SR program. The file will be in pcap format, i.e., you can use wireshark or tcpdump to read it.
 
-### Milestone 1: Answering ARP Requests
+        $ ./sr -l logname.pcap
+Besides SR, you can also use mininet to monitor the traffic goes in and out of the emulated nodes, i.e., router, server1 and server2. Mininet provides direct access to each emulated node. Take server1 as an example, to see the packets in and out of it, go to mininet CLI:
 
-When the router is running and you initiate web access to one of the servers, the very first packet that the router receives will be an ARP request, sent by the gateway node to the router asking the Ethernet address of the router.
+        mininet> server1 sudo tcpdump -n -i server1-eth0
+or you can bring up a terminal inside server1 by
 
-In the first milestone, you need to
+        mininet> xterm server1
+then inside the newly popped xterm,
 
-- Get familiar with the `sr` code
-- Process the ARP request
-- Send back a correct ARP reply
-- Receive the next packet, which should be a TCP SYN packet going to one of the web servers.
+        $ sudo tcpdump -n -i server1-eth0
+ 
+## General Forwarding Logic
 
-The correct behavior can be verified by logging the packets and viewing them with `tcpdump`.
+To get you started, an outline of the forwarding logic for a router follows, although it does not contain all the details. There are two main parts to this assignment: Handling ARP and IP forwarding
 
-### Milestone 2: Implementing a working router
+### IP Forwarding
+Given a raw Ethernet frame, if the frame contains an IP packet that is not destined towards one of our interfaces:
 
-In the 2nd milestone, you'll need to implement the rest of ARP and the basic IP forwarding. More specifically the required functionalities are listed as follows:
+- Sanity-check the packet (meets minimum length and has correct checksum).
+- Decrement the TTL by 1, and recompute the packet checksum over the modified header.
+- Find out which entry in the routing table has the longest prefix match with the destination IP address.
+- Check the ARP cache for the next-hop MAC address corresponding to the next-hop IP. If it's there, send it. Otherwise, send an ARP request for the next-hop IP (if one hasn't been sent within the last second), and add the packet to the queue of packets waiting on this ARP request. Obviously, this is a very simplified version of the forwarding process, and the low-level details follow. For example, if an error occurs in any of the above steps, you will have to send an ICMP message back to the sender notifying them of an error. You may also get an ARP request or reply, which has to interact with the ARP cache correctly.
+ 
+## Protocols to Understand
+ 
+### Ethernet
+You are given a raw Ethernet frame and have to send raw Ethernet frames. You should understand source and destination MAC addresses and the idea that we forward a packet one hop by changing the destination MAC address of the forwarded packet to the MAC address of the next hop's incoming interface.
 
-1. The router correctly handles ARP requests and replies. When it receives an ARP request, it can send back a correctly formatted ARP reply. When it wants to send an IP to the nexthop and doesn't know the nexthop's Ethernet address, it can send an ARP request and parse the returned ARP reply to get the Ethernet address.
-2. The router maintains an ARP cache whose entries should be refreshed every time a matching packet passes, and should be removed after 15s of no activity
-3. The router can successfully forward packets between the gateway and the application servers. When an IP packet arrives, the router should do the following:
+### Internet Protocol
+Before operating on an IP packet, you should verify its checksum and make sure it meets the minimum length of an IP packet. You should understand how to find the longest prefix match of a destination IP address in the routing table described in the "Getting Started" section. If you determine that a datagram should be forwarded, you should correctly decrement the TTL field of the header and recompute the checksum over the changed header before forwarding it to the next hop.
 
-    - Check if the destination address is itself. If yes, discard the packet.
-    - Decrement the TTL by 1. If the result is 0, discard the packet. Otherwise, update the checksum field. Refer the textbook for the IP Checksum algorithm.
-    - Look up the routing table to find out the IP address of the nexthop. 
-    - Check ARP cache for the Ethernet address of the nexthop. If needed, it should send an ARP request to get the Ethernet address. 
-    - While the router is waiting for ARP reply, it should store incoming packets that use the same nexthop. 
-    - After the ARP reply is received, save the information in ARP cache, and send out all the packets that are waiting for the ARP reply.
-4. Using the router, you can download files from the servers.
-5. The IP checksum algorithm is covered in this course. A great way to test if your checksum function is working is to run it on an arriving packet. If you get the same checksum that is already contained in the packet, then your function is working. Remember to zero out the checksum field when you feed the packet to your checksum calculation. If the checksum is wrong, `tcpdump` will complain.
+### Internet Control Message Protocol
+ICMP is a simple protocol that can send control information to a host. In this assignment, your router will use ICMP to send messages back to a sending host. You will need to properly generate the following ICMP messages (including the ICMP header checksum) in response to the sending host under the following conditions:
 
-## Grading
+- Echo reply (type 0) Sent in response to an echo request (ping) to one of the router's interfaces. (This is only for echo requests to any of the router's IPs. An echo request sent elsewhere should be forwarded to the next hop address as usual.)
+- Destination net unreachable (type 3, code 0) * Sent if there is a non-existent route to the destination IP (no matching entry in routing table when forwarding an IP packet).
+- Destination host unreachable (type 3, code 1) * Sent if five ARP requests were sent to the next-hop IP without a response.
+- Port unreachable (type 3, code 3) * Sent if an IP packet containing a UDP or TCP payload is sent to one of the router's interfaces. This is needed for traceroute to work.
+- Time exceeded (type 11, code 0) * Sent if an IP packet is discarded during processing because the TTL field is 0. This is also needed for traceroute to work. The source address of an ICMP message can be the source address of any of the incoming interfaces, as specified in RFC 792. As mentioned above, the only incoming ICMP message destined towards the router's IPs that you have to explicitly process are ICMP echo requests. You may want to create additional structs for ICMP messages for convenience, but make sure to use the packed attribute so that the compiler doesn't try to align the fields in the struct to word boundaries.
 
-The project will be graded on a different topology. Don’t hardcode anything about your topology in the source code. 
+### Address Resolution Protocol
+ARP is needed to determine the next-hop MAC address that corresponds to the next-hop IP address stored in the routing table. Without the ability to generate an ARP request and process ARP replies, your router would not be able to fill out the destination MAC address field of the raw Ethernet frame you are sending over the outgoing interface. Analogously, without the ability to process ARP requests and generate ARP replies, no other router could send your router Ethernet frames. Therefore, your router must generate and process ARP requests and replies. To lessen the number of ARP requests sent out, you are required to cache ARP replies. Cache entries should time out after 15 seconds to minimize staleness. The provided ARP cache class already times the entries out for you. When forwarding a packet to a next-hop IP address, the router should first check the ARP cache for the corresponding MAC address before sending an ARP request. In the case of a cache miss, an ARP request should be sent to a target IP address about once every second until a reply comes in. If the ARP request is sent five times with no reply, an ICMP destination host unreachable is sent back to the source IP as stated above. The provided ARP request queue will help you manage the request queue. In the case of an ARP request, you should only send an ARP reply if the target IP address is one of your router's IP addresses. In the case of an ARP reply, you should only cache the entry if the target IP address is one of your router's IP addresses. Note that ARP requests are sent to the broadcast MAC address (ff-ff-ff-ff-ff-ff). ARP replies are sent directly to the requester's MAC address.
 
-You can work by yourself or in a group of two students. No group can have more than two students.
+## IP Packet Destinations
+ 
+An incoming IP packet may be destined for one of your router's IP addresses, or it may be destined elsewhere. If it is sent to one of your router's IP addresses, you should take the following actions, consistent with the section on protocols above:
 
-Your code must be written in C or C++ and use the stub code.
+- If the packet is an ICMP echo request and its checksum is valid, send an ICMP echo reply to the sending host.
+- If the packet contains a TCP or UDP payload, send an ICMP port unreachable to the sending host. Otherwise, ignore the packet. Packets destined elsewhere should be forwarded using your normal forwarding logic.
 
+## Code Overview
+ 
+### Basic Functions
+Your router receives a raw Ethernet frame and sends raw Ethernet frames when sending a reply to the sending host or forwarding the frame to the next hop. The basic functions to handle these functions are:
 
-We will test your code by two ways:
+        void sr_handlepacket(struct sr_instance* sr, uint8_t * packet, unsigned int len, char* interface)
+This method, located in sr_router.c, is called by the router each time a packet is received. The "packet" argument points to the packet buffer which contains the full packet including the ethernet header. The name of the receiving interface is passed into the method as well.
 
-1. Access the web server from the client. E.g., 
+        int sr_send_packet(struct sr_instance* sr, uint8_t* buf, unsigned int len, const char* iface)
+This method, located in sr_vns_comm.c, will send an arbitrary packet of length, len, to the network out of the interface specified by iface.
 
-       wget http://ServerIP:16280 (this retrieves the web front page from the server.)
-       wget http://ServerIP:16280/64MB.bin (this retrieves a 64MB file.)
+You should not free the buffer given to you in sr_handlepacket (this is why the buffer is labeled as being "lent" to you in the comments). You are responsible for doing correct memory management on the buffers that sr_send_packet borrows from you (that is, sr_send_packet will not call free on the buffers that you pass it).
 
-2. Log packets and analyze the router’s behavior. E.g., Retrieve a web page, then wait for 20s, then retrieve the page again. From the traffic log, we should see ARP request/reply at the beginning of each retrieval, but not during the retrieval because of ARP cache. We will also use this way to verify TTL decrement and checksum.
+        void sr_arpcache_sweepreqs(struct sr_instance *sr)
+The assignment requires you to send an ARP request about once a second until a reply comes back or we have sent five requests. This function is defined in sr_arpcache.c and called every second, and you should add code that iterates through the ARP request queue and re-sends any outstanding ARP requests that haven't been sent in the past second. If an ARP request has been sent 5 times with no response, a destination host unreachable should go back to all the sender of packets that were waiting on a reply to this ARP request.
 
-Grading is based on functionality (i.e., what works and what doesn’t), not the source code (i.e., what has been written). For example, when a required functionality doesn’t work, its credit will be deducted, regardless of whether it’s caused by a trivial oversight in the code vs. a serious design flaw.
+## Data Structures
+ 
+### The Router (sr_router.h):
+The full context of the router is housed in the struct sr_instance (sr_router.h). sr_instance contains information about topology the router is routing for as well as the routing table and the list of interfaces.
 
-## Submission
+### Interfaces (sr_if.c/h):
+After connecting, the server will send the client the hardware information for that host. The stub code uses this to create a linked list of interfaces in the router instance at member if_list. Utility methods for handling the interface list can be found at sr_if.c/h.
 
-Only one submission per group.
+### The Routing Table (sr_rt.c/h):
+The routing table in the stub code is read on from a file (default filename "rtable", can be set with command line option -r ) and stored in a linked list of routing entries in the current routing instance (member routing_table).
 
-1. Name your working directory "sr".
+### The ARP Cache and ARP Request Queue (sr_arpcache.c/h):
+You will need to add ARP requests and packets waiting on responses to those ARP requests to the ARP request queue. When an ARP response arrives, you will have to remove the ARP request from the queue and place it onto the ARP cache, forwarding any packets that were waiting on that ARP request. Pseudocode for these operations is provided in sr_arpcache.h. The base code already creates a thread that times out ARP cache entries 15 seconds after they are added for you. You must fill out the sr_arpcache_sweepreqs function in sr_arpcache.c that gets called every second to iterate through the ARP request queue and re-send ARP requests if necessary. Psuedocode for this is provided in sr_arpcache.h.
 
-2. Make sure this directory has all the source files and the Makefile. Include a README file, listing the names and emails of group members, and anything you want us to know about your router. Especially when it only works partially, it helps to list what works and what not.
+### Protocol Headers (sr_protocol.h)
+Within the router framework you will be dealing directly with raw Ethernet packets. The stub code itself provides some data structures in sr_protocols.h which you may use to manipulate headers easily. There are a number of resources which describe the protocol headers in detail. Network Sorcery's RFC Sourcebook provides a condensed reference to the packet formats you'll be dealing with:
 
-3. Create a tarball 
+- Ethernet
+- IP
+- ICMP
+- ARP For the actual specifications, there are also the RFC's for ARP (RFC826), IP (RFC791), and ICMP (RFC792).
+### Debugging Functions
+We have provided you with some basic debugging functions in sr_utils.h, sr_utils.c. Feel free to use them to print out network header information from your packets. Below are some functions you may find useful:
 
-       cd sr
-       make clean
-       cd ..
-       tar -zcf sr.tgz sr
+- print_hdrs(uint8_t \*buf, uint32_t length) - Prints out all possible headers starting from the Ethernet header in the packet
+- print_addr_ip_int(uint32_t ip) - Prints out a formatted IP address from a uint32_t. Make sure you are passing the IP address in the correct byte ordering.
 
-4. Upload sr.tgz to CCLE. 
+# Length of Assignment
+This assignment is considerably harder than the first 2 labs, so get started early.
 
+In our reference solution, we added 520 lines of C, including whitespace and comments.
 
+Of course, your solution may need fewer or more lines of code, but this gives you a rough idea of the size of the assignment to a first approximation.
 
+To help you debug your topologies and understand the required behavior we provide a reference binary and you can find it at ~/lab3/sr_solution in your directory:
+
+We have talked about how to use it in the "Test Connectivity of Your Emulated Topology" section, please refer to the instructions there.
+
+## Required Functionality
+ 
+- The router must successfully route packets between the Internet and the application servers.
+- The router must correctly handle ARP requests and replies.
+- The router must correctly handle traceroutes through it (where it is not the end host) and to it (where it is the end host).
+- The router must respond correctly to ICMP echo requests.
+- The router must handle TCP/UDP packets sent to one of its interfaces. In this case the router should respond with an ICMP port unreachable.
+- The router must maintain an ARP cache whose entries are invalidated after a timeout period (timeouts should be on the order of 15 seconds).
+- The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to 5 ARP requests, the queued packet is dropped and an ICMP host unreachable message is sent back to the source of the queued packet.
+- The router must not needlessly drop packets (for example when waiting for an ARP reply)
+- The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time, the ICMP host unreachable message is generated even if no more packets arrive at the router. (Note: You can guarantee this by implementing the sr_arpcache_sweepreqs function in sr_arpcache.c correctly.)
+
+## Acknowledgement
+ 
+This project was largely based on the CS144 class project by the Dr. Nick McKeown, Stanford University.
+ 
+ 
