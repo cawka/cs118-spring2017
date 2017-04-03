@@ -79,6 +79,8 @@ Next, double click the downloaded image file, you will see:
 
 Then click **Import**, and the VM will be imported to your VirtualBox host. 
 
+The next step is to make sure that the adapter was properly assigned to the VM. Go to the VM settings by clicking on the VM and clicking Settings->Network. Make sure the “Adapter 2” configuration looks like this (the “Name” may be different than the one in this image but should be the same as the name you saw earlier):
+
 Then select **cs118-vm**, click **start**, the VM will be started. **Login ID: cs118, password: cs118**
 
 ### SSHing into the VM
