@@ -23,6 +23,8 @@ In this project, you will be writing a simple router with a static routing table
 
 Your router will route real packets from a emulated host (client) to two emulated application servers (http server 1/2) sitting behind your router. The application servers are each running an HTTP server. When you have finished the forwarding path of your router, you should be able to access these servers using regular client software. In addition, you should be able to ping and traceroute to and through a functioning Internet router. A sample routing topology is shown below:
 
+![topo-sample](/figures/topo-sample.png)
+
 If the router is functioning correctly, all of the following operations should work:
 
 - Pinging from the client to any of the router's interfaces (192.168.2.1, 172.64.3.1, 10.0.1.1).
@@ -45,9 +47,27 @@ There are two ways to setup environment:
 - build tools on your own native system
 
 ### Setup Using VM Image
-If you use [VirtualBox](https://www.virtualbox.org/) (Version 4.3.20 or later is preferred) as the host, we have already made a VM image (add the VM image here) for you. Before installing the image, you need to make sure a **Host-only network vboxnet0** has been created. To do that, click Preference -> Network, if there is no **vboxnet0** in the Host-only network list, add one, so it would look like this:
+If you use [VirtualBox](https://www.virtualbox.org/) (Version 4.3.20 or later is preferred) as the host, we have already made a VM image (add the VM image here) for you. Before installing the image, you need to make sure a **Host-only network vboxnet0** has been created. To do that, under VirtualBox’s preferences (File->Preferences or VirtualBox->Preferences on Mac), click on Network, then Host-only Networks.
+
+If nothing is listed, you need to first add an adapter by clicking on the +.
+
+![add-adapter](/figures/add-adapter.png)
+
+Check that the adapter configuration looks like this (the adapter name may be different):
+
+![adapter-status](/figures/adapter-status.png)
+
+If the IPv4 address is different, you may want to change it to the same value as us to avoid possible conflicts later on.
+
+You will then need to enable the DHCP server for this adapter. Use the following settings:
+
+![dhcp](/figures/dhcp.png)
+
+This will ensure that your VM receives an IPv4 address within the range **192.168.56.10 - 192.168.56.20** (although it’s okay if it doesn’t).
 
 Next, double click the downloaded image file, you will see:
+
+
 
 Then click **Import**, and the VM will be imported to your VirtualBox host. 
 
