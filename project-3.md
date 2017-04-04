@@ -43,82 +43,24 @@ This assignment runs on top of Mininet which was built at Stanford. Mininet allo
 
 ## Environment Setup
  
-There are two ways to setup environment:
+Clone project template
 
-- import a virtual machine image (on which all tools have been set up) to your VirtualBox host
-- build tools on your own native system
+        git clone https://github.com/cs118/spring17-project2 ~/cs118-proj2
+        cd ~/cs118-proj2
+Initialize VM
 
-### Setup Using VM Image
-If you use [VirtualBox](https://www.virtualbox.org/) (Version 4.3.20 or later is preferred) as the host, we have already made a VM image (add the VM image here) for you. Before installing the image, you need to make sure a **Host-only network vboxnet0** has been created. To do that, under VirtualBox’s preferences (File->Preferences or VirtualBox->Preferences on Mac), click on Network, then Host-only Networks.
+        vagrant up
+To establish an SSH session to the created VM, run
 
-If nothing is listed, you need to first add an adapter by clicking on the +.
-
-<p align="center">
-<img src="./figures/add-adapter.png" width="480">
-</p>
-
-Check that the adapter configuration looks like this (the adapter name may be different):
-
-<p align="center">
-<img src="./figures/adapter-status.png" width="480">
-</p>
-
-If the IPv4 address is different, you may want to change it to the same value as us to avoid possible conflicts later on.
-
-You will then need to enable the DHCP server for this adapter. Use the following settings:
-
-<p align="center">
-<img src="./figures/dhcp.png" width="480">
-</p>
-
-This will ensure that your VM receives an IPv4 address within the range **192.168.56.10 - 192.168.56.20** (although it’s okay if it doesn’t).
-
-Next, double click the downloaded image file, you will see:
-
-
-
-Then click **Import**, and the VM will be imported to your VirtualBox host. 
-
-The next step is to make sure that the adapter was properly assigned to the VM. Go to the VM settings by clicking on the VM and clicking Settings->Network. Make sure the “Adapter 2” configuration looks like this (the “Name” may be different than the one in this image but should be the same as the name you saw earlier):
-
-Then select **cs118-vm**, click **start**, the VM will be started. **Login ID: cs118, password: cs118**
-
-### SSHing into the VM
-
-SSHing into the VM (the guest OS) from your computer (the host OS) allows you to access the VM through a terminal on your host OS. After setting up the Network Settings (above), you can power on the VM (**cs118 / cs118**). Open a terminal to check its IP address:
-
-        ifconfig
-        
-This will spit out a list with **eth0, eth1, lo,** etc. Look for an IP address of the form **192.168.56.\*** under inet addr. For example:
-
-        % ifconfig
-        ...
-        eth0        Link encap:Ethernet  HWaddr 00:0c:29:c2:5f:16
-                    inet addr:192.168.56.11  Bcast:182.168.56.255  Mask:255.255.255.0
-                    ...
-                   
-Most likely it will appear under **eth0** or **eth1**. If you cannot find the right IP address, and one of **eth0** or **eth1** is missing, run this command:
-
-        sudo dhclient eth0
-
-(or **eth1**, depending on which one is missing):
-
-        sudo dhclient eth1
-
-If you do **ifconfig** again, an IP address of the form **192.168.56.\*** should appear.
-
-Then, you can use **SSH** on your local machine (Mac or Linux) to login the VM by typing the following in your terminal (on the Mac/Linux side):
-
-        ssh cs118@192.168.56.11 (or whatever IP address ifconfig gave you)
-
-On Windows, you will need to use third-party software (e.g. MobaXterm, PuTTY, or Cygwin).
+        vagrant ssh
 
 ## Get Started
 
 You can test if you are all set by following steps:
 
-- Run Mininet emulator
-  open an terminal on your local machine (**not the VM**), use SSH to login the VM. Then
+- Step 1: Run Mininet emulator
+  
+  open an terminal on your local machine (**not the VM**), run "Vagrant ssh" to log in the VM.
   
         $ cd ~/lab3/
         $ ./run_mininet.sh
@@ -160,8 +102,9 @@ You can test if you are all set by following steps:
         mininet> 
  
    Keep this terminal open, as you will need the mininet command line for debugging. 
- - Run POX Controller.
-   Now, open another terminal on your local machine (**not the VM**), use SSH to login the VM.
+ - Step 2: Run POX Controller.
+ 
+   Now, open another terminal on your local machine (**not the VM**), run "Vagrant ssh" to log in the VM
 
         $ cd ~/lab3/
         $ ./run_pox.sh
@@ -189,8 +132,9 @@ You can test if you are all set by following steps:
         DEBUG:.home.ubuntu.cs144_lab3.pox_module.cs144.srhandler:SRServerListener catch RouterInfo even, info={'eth3': ('10.0.1.1', '86:05:70:7e:eb:56', '10Gbps', 3), 'eth2': ('172.64.3.1', 'b2:9e:54:d8:9d:cd', '10Gbps', 2), 'eth1': ('192.168.2.1', '36:61:7c:4f:b6:7b', '10Gbps', 1)}, rtable=[]
  
   Keep the POX running. 
-- Test the connectivity of the environment
-  Now, open the third terminal on your local machine (**not the VM**), use SSH to login the VM.
+- Step 3: Test the connectivity of the environment
+
+  Now, open the third terminal on your local machine (**not the VM**), run "Vagrant ssh" to log in the VM
   
         $ cd ~/lab3/
         $ ./sr_solution
@@ -229,7 +173,11 @@ You can test if you are all set by following steps:
         mininet> client ping -c 3 192.168.2.2
         mininet> client traceroute -n 192.168.2.2
         mininet> client wget http://192.168.2.2
-        
+
+- Step 4: stop the program
+
+  To stop the sr_solution run in step 3, press "ctrl + c"; to stop pox run in step 2, type in "exit();", then "enter"; to stop mininet run in step 1, type in "exit", then "enter".
+
 ## Starter Code
  
 You should now have all the pieces needed to build and run the router:
