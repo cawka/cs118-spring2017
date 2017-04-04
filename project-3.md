@@ -53,6 +53,8 @@ Initialize VM
 To establish an SSH session to the created VM, run
 
         vagrant ssh
+        
+**NOTE: do not update the VM's Ubuntu OS, as this project will ONLY work on the given Ubuntu OS version**
 
 ## Get Started
 
@@ -104,10 +106,12 @@ You can test if you are all set by following steps:
    Keep this terminal open, as you will need the mininet command line for debugging. 
  - Step 2: Run POX Controller.
  
-   Now, open another terminal on your local machine (**not the VM**), run "Vagrant ssh" to log in the VM
+   Now, open another terminal on your local machine (**not the VM**), run "Vagrant ssh" to log in the VM   
 
         $ cd ~/lab3/
         $ ./run_pox.sh
+        
+   **Due to an unknow bug, the first time "./run_pox.sh" is excuted, there is always an exception. To solve this problem, simply type in "eixt();" and press "enter", then run the command again.**
         
    You should be able to see something like this:
    
@@ -176,7 +180,7 @@ You can test if you are all set by following steps:
 
 - Step 4: stop the program
 
-  To stop the sr_solution run in step 3, press "ctrl + c"; to stop pox run in step 2, type in "exit();", then "enter"; to stop mininet run in step 1, type in "exit", then "enter".
+  To stop the sr_solution run in step 3, press "ctrl + c"; to stop pox run in step 2, type in "exit();", then press "enter"; to stop mininet run in step 1, type in "exit", then press "enter".
 
 ## Starter Code
  
