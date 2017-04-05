@@ -140,6 +140,9 @@ You can easily create an image in your favourite virtualization engine (VirtualB
 
         vagrant up
 
+    Do not start VM instance manually from VirtualBox GUI, otherwise you may have various problems (connection error, connection timeout, missing packages, etc.)
+    {: class="alert alert-warning"}
+
   * To establish an SSH session to the created VM, run
 
         vagrant ssh
