@@ -4,6 +4,9 @@ title: "Project 2: \"Confundo\" Transport Protocol over UDP "
 group: "Project 2"
 ---
 
+**Revisions**
+- April 6, 2017: Corrected the `tc` command to reorder packets.
+
 * toc
 {:toc}
 
@@ -301,10 +304,10 @@ You can use the following commands to adjust parameters of the emulation:
 
 - You can also change network emulation to re-order packets.  The command below makes 4 out of every 5 packets (1-4, 6-9, ...) to be delayed by 100ms, while every 5th packet (, 10, 15, ...) will be sent immediately:
 
-        tc qdisc change dev enp0s8 root netem gap 5 delay 100ms
+        tc qdisc change dev enp0s8 root netem reorder 100% gap 5 delay 100ms
 
         # or if you're just adding the rule
-        # tc qdisc add dev enp0s8 root netem gap 5 delay 100ms
+        # tc qdisc add dev enp0s8 root netem reorder 100% gap 5 delay 100ms
 
 - More examples can be found in [Network Emulation tutorial](http://www.linuxfoundation.org/collaborate/workgroups/networking/netem)
 
