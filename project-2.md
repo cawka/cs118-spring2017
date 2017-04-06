@@ -4,12 +4,13 @@ title: "Project 2: \"Confundo\" Transport Protocol over UDP "
 group: "Project 2"
 ---
 
+* toc
+{:toc}
+
+
 **Revisions**
 
 - April 6, 2017: Corrected the `tc` command to reorder packets.
-
-* toc
-{:toc}
 
 ## Overview
 
