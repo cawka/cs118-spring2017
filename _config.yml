@@ -6,11 +6,6 @@ markdown: kramdown
 exclude: ['CNAME', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'README.md', '.sass-cache']
 sass:
   style: uncompressed
-gems:
-  - jekyll-bootstrap-sass
-
-bootstrap:
-  assets: true
 
 url: http://web.cs.ucla.edu
 baseurl: /classes/spring17/cs118
