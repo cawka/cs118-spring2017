@@ -6,6 +6,8 @@ markdown: kramdown
 exclude: ['CNAME', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'README.md', '.sass-cache']
 sass:
   style: uncompressed
+kramdown:
+  toc_levels: "2,3"
 
 url: http://web.cs.ucla.edu
 baseurl: /classes/spring17/cs118
@@ -31,8 +33,8 @@ navbar_list:
   link: /project-1.html
 - name: Project 2 (Confundo)
   link: /project-2.html
-# - name: Project 3 (Riddikulus)
-#   link: /project-3.html
+- name: Project 3 (Riddikulus)
+  link: /project-3.html
 
 course_info:
   times: Mondays/Wednesdays, 8am-9:50am
