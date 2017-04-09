@@ -404,7 +404,7 @@ To submit your project, you need to prepare:
 
     **If you need additional dependencies for your project, you must update Vagrant file.**
 
-1. All your source code, `Makefile`, `README.md`, `Vagrantfile`, `confundo.lua`, and `.git` folder with your git repository history as a `.tar.gz` archive.
+1. All your source code, `Makefile`, `README.md`, `Vagrantfile`, `confundo.lua`, and `.git` folder with your git repository history as a `.tar.gz` archive (and any files from extra credit part).
 
     To create the submission, **use the provided Makefile** in the skeleton project.  Just update `Makefile` to include your UCLA ID and then just type
 

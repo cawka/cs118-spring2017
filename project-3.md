@@ -302,7 +302,7 @@ struct ip_hdr
     * For (1), if packet carries ICMP payload, it should be properly dispatched.  Otherwise, discarded (a proper ICMP error response not required for this project).
 
     * For (2), your router should use the longest prefix match algorithm to find a next-hop IP address in the routing table and attempt to forward it there
-  
+
 - For each forwarded IPv4 packet, your router should correctly decrement TTL and recompute the checksum.
 
 ### ICMP Packets
@@ -386,13 +386,104 @@ Your router should properly generate the following ICMP messages, including prop
 <!-- ///////////// -->
 <!-- ///////////// -->
 
+## Environment Setup
+
+### Initial Setup
+
+For this project you should use the provided Vagrant environment, as it installs several critical dependencies and starts a daemon.  You can follow instructions in `Vagrantfile` to recreate environment natively, but do it on your own risk.
+
+
+1. Clone project template
+
+    ```bash
+    git clone https://github.com/cs118/spring17-project3 ~/cs118-proj3
+    cd ~/cs118-proj3
+    ```
+
+2. Initialize VM
+
+    ```bash
+    vagrant up
+    ```
+
+3. To establish an SSH session to the created VM, run
+
+    ```bash
+    vagrant ssh
+    ```
+
+    In this project you will need to open at least two SSH sessions to the VM: to run Mininet to emulate topology and to run commands on emulated nodes, and to run your router implementation.
+
+    If you would like to span per-emulated node `xterm` terminals from Mininet, you can establish SSH sessions in a slightly different way (probably will not work on Windows):
+
+    ```bash
+    vagrant ssh -- -Y
+    ```
+
+### Running Your Router
+
+To run your router, you will need to run in parallel two commands: Mininet process that emulates network topology and your router app.  For ease of debugging, can run them in `screen` (or `tmux`) environments or simply in separate SSH sessions:
+
+- To run Mininet network emulation process
+
+    ```bash
+    vagrant ssh #  or   vagrant ssh -- -Y
+
+    cd /vagrant
+    sudo ./run.py # must be run as superuser
+    ...
+    mininet>
+    ```
+
+- To run your router
+
+    ```bash
+    vagrant ssh
+
+    cd /vagrant
+    #
+    # implement router logic // see below
+    #
+    make
+    ./router
+    ```
+
+    <span class="label label-info">Note</span>
+    If after start of the router, you see the following message
+
+    ```
+    Resetting SimpleRouter with 0 ports
+    Interface list empty
+    ```
+
+    You should start or restart Mininet process.  The expected initial output should be:
+
+    ```
+    Resetting SimpleRouter with 3 ports
+    sw0-eth1 (192.168.2.1, f6:fc:48:40:43:af)
+    sw0-eth2 (172.64.3.1, 56:be:8e:bd:91:bf)
+    sw0-eth3 (10.0.1.1, 22:69:6c:08:25:e9)
+    ...
+    ```
+
+The VM environment you're using in this project runs a process that redirects packets from the Mininet-emulated switch to your router.  If you want to see debug output of that redirector, you can use `journalctl` command:
+
+```
+root@vagrant:/vagrant/# journalctl -f _SYSTEMD_UNIT=pox.service
+-- Logs begin at Sat 2017-04-08 20:51:21 UTC. --
+Apr 09 19:57:48 vagrant pox.py[8879]: POX 0.5.0 (eel) / Copyright 2011-2014 James McCauley, et al.
+Apr 09 19:57:48 vagrant pox.py[8879]: INFO:.usr.local.lib.python2.7.dist-packages.ucla_cs118.pox_rpc_server:Starting packet redirector...
+Apr 09 19:57:48 vagrant pox.py[8879]: -- 04/09/17 19:57:48.798 Network: listening for tcp connections at 127.0.0.1:8888
+Apr 09 19:57:48 vagrant pox.py[8879]: -- 04/09/17 19:57:48.798 Network: published endpoints for object adapter `SimpleRouter':
+Apr 09 19:57:48 vagrant pox.py[8879]:    tcp -h 127.0.0.1 -p 8888
+Apr 09 19:57:48 vagrant pox.py[8879]: -- 04/09/17 19:57:48.799 Network: accepting tcp connections at 127.0.0.1:8888
+Apr 09 19:57:48 vagrant pox.py[8879]: INFO:core:POX 0.5.0 (eel) is up.
+...
+```
+
 ## Starter Code Overview
 
-You can build and run the starter code as follows:
-
-    TBD
-
-Here is the overal structure of the started code:
+Here is the overal structure of the starter code:
 
                         simple-router.hpp
                         +--------------+            core/protocol.hpp
@@ -541,27 +632,6 @@ If an incoming IP packet is destined towards one of your router's IP addresses, 
 
 Obviously, this is a very simplified version of the forwarding process, and the low-level details follow. For example, if an error occurs in any of the above steps, you will have to send an ICMP message back to the sender notifying them of an error. You may also get an ARP request or reply, which has to interact with the ARP cache correctly.
 
-## Environment Setup
-
-TBD
-
-<!-- Clone project template -->
-
-<!-- ```bash -->
-<!-- git clone https://github.com/cs118/spring17-project3 ~/cs118-proj3 -->
-<!-- cd ~/cs118-proj3 -->
-<!-- ``` -->
-
-<!-- Initialize VM -->
-<!-- ```bash -->
-<!-- vagrant up -->
-<!-- ``` -->
-
-<!-- To establish an SSH session to the created VM, run -->
-
-<!-- ```bash -->
-<!-- vagrant ssh -->
-<!-- ``` -->
 
 ## Submission Requirements
 
@@ -575,7 +645,7 @@ To submit your project, you need to prepare:
     * List of any additional libraries used
     * Acknowledgement of any online tutorials or code example (except class website) you have been using.
 
-1. All your source code, `Makefile`, `README.md`, `Vagrantfile`, `confundo.lua`, and `.git` folder with your git repository history as a `.tar.gz` archive.
+1. All your source code, `Makefile`, `README.md`, `Vagrantfile`, `confundo.lua`, and `.git` folder with your git repository history as a `.tar.gz` archive (and any files from extra credit part).
 
     To create the submission, **use the provided Makefile** in the starter code.  Just update `Makefile` to include your UCLA ID and then just type
 
