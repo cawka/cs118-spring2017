@@ -20,7 +20,7 @@ You are encouraged to host your code in private repositories on [GitHub](https:/
 
 ## Task Description
 
-There are three main parts in this assignment:
+There are four main parts in this assignment:
 
 - Handle Ethernet frames
 - Handle ARP packets
@@ -46,7 +46,7 @@ Your router will route real packets between emulated hosts in a single-router to
           +                 10.0.1.1/8        172.64.3.1/16           |  server2  |
           |                      +                +                   |           |
           |                      |                |                   +-----------+
-      `   |                      |                |                  server2-eth0
+          |                      |                |                  server2-eth0
           +----------------------+                +----------------+ 172.64.3.10/16
 
 The corresponding routing table for the SimpleRouter `sw0` in this default topology:
@@ -295,11 +295,11 @@ struct ip_hdr
 
 - For each incoming IPv4 packet, your router should verify its checksum and the minimum length of an IP packet
 
-    * Invalid packets must be discarded (a proper ICMP error response not required for this project).
+    * Invalid packets must be discarded (a proper ICMP error response is NOT required for this project).
 
 - Your router should classify datagrams into (1) destined to the router (to one of the IP addresses of the router), and (2) datagrams to be forwarded:
 
-    * For (1), if packet carries ICMP payload, it should be properly dispatched.  Otherwise, discarded (a proper ICMP error response not required for this project).
+    * For (1), if packet carries ICMP payload, it should be properly dispatched.  Otherwise, discarded (a proper ICMP error response is NOT required for this project).
 
     * For (2), your router should use the longest prefix match algorithm to find a next-hop IP address in the routing table and attempt to forward it there
 
@@ -343,14 +343,30 @@ In this assignment, your router will use ICMP to send messages back to a sending
     * `Code`
 
       - `0`: time to live exceeded in transit
-      - `1`: fragment reassembly time exceeded (not required to implement)
+      - `1`: fragment reassembly time exceeded (NOT required to implement)
+
+- `Destination Unreachable` message
+
+         0                   1                   2                   3
+         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |  Type = 3     |     Code      |          Checksum             |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |                             unused                            |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |      Internet Header + 64 bits of Original Data Datagram      |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    * `Code`
+
+      - `3`: Destination port unreachable
 
 
 <span class="label label-info">Extra Credit</span>
-The source address of an ICMP message can be the source address of any of the incoming interfaces, as specified in [RFC 792](https://tools.ietf.org/html/rfc792).
+If an ICMP message is composed by a router, the source address field of the internet header can be the IP address of any of the router's interfaces, as specified in [RFC 792](https://tools.ietf.org/html/rfc792).
 
 <span class="label label-info">Extra Credit</span>
-`Time Exceeded` message is needed for `traceroute` to work properly.
+`Time Exceeded` message and `Destination Unreachable` messag are needed for `traceroute` to work properly.
 
 For your convenience, the starter code defines the ICMP header as an `icmp_hdr` structure in `core/protocol.hpp`:
 
@@ -373,9 +389,10 @@ Your router should properly generate the following ICMP messages, including prop
     Sent in response to an incoming `Echo Request` message (ping) to one of the router's interfaces.
     Echo requests sent to other IP addresses should be forwarded to the next hop address as usual.
 
-- `Time Exceeded` message (`type 11`, `code 0`):
+- <span class="label label-info">Extra Credit</span>
+  `Time Exceeded` message (`type 11`, `code 0`):
 
-    Sent if an IP packet is discarded during processing because the TTL field is 0.
+    Sent if an IP packet is discarded during processing because the TTL field is 0. This is needed for traceroute to work.
 
 - <span class="label label-info">Extra Credit</span>
   `Port Unreachable` message (`type 3`, `code 3`):
@@ -670,8 +687,6 @@ Submissions that do not follow these requirements will not get any credit.
 
 - The router must correctly handle ARP requests and replies.
 
-- The router must correctly handle traceroutes through it (where it is not the end host) and to it (where it is the end host).
-
 - The router must respond correctly to ICMP echo requests.
 
 - The router must maintain an ARP cache whose entries are invalidated after a timeout period (timeouts should be on the order of `30 seconds`).
@@ -688,13 +703,18 @@ The submission archive contains temporary or other non-source code file, except 
 
 ### Extra Credit
 
-- (1 pts) ICMP destination unreachable
+- (1 pt) ICMP destination unreachable
 
     * When no ARP reply after `5 requests` and enqueued packets are dropped.
 
-- (1 pts) ICMP port unreachable
+- (1 pt) ICMP time exceeded
+    
+    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message.
 
-    * The router must handle TCP/UDP packets sent to one of its interfaces. In this case the router should respond with an ICMP port unreachable.
+
+- (1 pt) ICMP port unreachable
+
+    * The router must handle TCP/UDP packets sent to one of its interfaces. In this case the router should respond with an ICMP port unreachable message.
 
 
 ## Acknowledgement
