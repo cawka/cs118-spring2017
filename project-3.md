@@ -658,7 +658,7 @@ To submit your project, you need to prepare:
 
     * Name and UID of each team member (up to 3 members in one team) and the contribution of each member
     * The high level design of your implementation
-    * The problems your ran into and how you solved the problems
+    * The problems you ran into and how you solved the problems
     * List of any additional libraries used
     * Acknowledgement of any online tutorials or code example (except class website) you have been using.
 
@@ -673,7 +673,7 @@ To submit your project, you need to prepare:
 Before submission, please make sure:
 
 1. Your code compiles
-2. Client and server conforms to the specification
+2. Your implementation conforms to the specification
 3. `.tar.gz` archive does not contain temporary or other unnecessary files.  We will automatically deduct points otherwise.
 
 Submissions that do not follow these requirements will not get any credit.
@@ -683,23 +683,28 @@ Submissions that do not follow these requirements will not get any credit.
 
 ### Grading Criteria
 
-- The router must successfully route packets between the Internet and the application servers.
+- Each group member must have at least 3 git commits.
 
 - The router must correctly handle ARP requests and replies.
 
 - The router must respond correctly to ICMP echo requests.
 
-- The router must maintain an ARP cache whose entries are invalidated after a timeout period (timeouts should be on the order of `30 seconds`).
+- The router must successfully route packets between the Internet and the application servers.
+    * The router must be able to successfully transmit a small file (500 bytes)
+    * The router must be able to successfully transmit a medium file (1 MiB)
+    * The router must be able to successfully transmit a large file (100 MiB)
+
+- The router must maintain an ARP cache whose entries are invalidated and removed after a timeout period (timeouts should be on the order of `30 seconds`).
+
+- The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time (1 second).
 
 - The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to `5` ARP requests, the queued packets are dropped.
 
-- The router must not needlessly drop packets (i.e., when waiting for an ARP reply).
-
-- The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time.
+- The router must work well under any network topology.
 
 ### Deductions
 
-The submission archive contains temporary or other non-source code file, except `README.md`, `Vagrantfile`, files under `.git` subfolder (and any files from extra credit part).
+(-5 pts) The submission archive contains temporary or other non-source code file, except `README.md`, `Vagrantfile`, files under `.git` subfolder (and any files from extra credit part).
 
 ### Extra Credit
 
