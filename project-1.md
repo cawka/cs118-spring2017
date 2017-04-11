@@ -180,7 +180,7 @@ To submit your project, you need to prepare:
 
     * Your name, UCLA ID
     * The high level design of your server and client
-    * The problems your ran into and how you solved the problems
+    * The problems you ran into and how you solved the problems
     * List of any additional libraries used
     * Acknowledgement of any online tutorials or code example (except class website) you have been using.
 
