@@ -362,11 +362,9 @@ In this assignment, your router will use ICMP to send messages back to a sending
       - `3`: Destination port unreachable
 
 
-<span class="label label-info">Extra Credit</span>
-If an ICMP message is composed by a router, the source address field of the internet header can be the IP address of any of the router's interfaces, as specified in [RFC 792](https://tools.ietf.org/html/rfc792).
+When an ICMP message is composed by a router, the source address field of the internet header can be the IP address of any of the router's interfaces, as specified in [RFC 792](https://tools.ietf.org/html/rfc792).
 
-<span class="label label-info">Extra Credit</span>
-`Time Exceeded` message and `Destination Unreachable` messag are needed for `traceroute` to work properly.
+Note that `Time Exceeded` message is needed for `traceroute` to work properly.
 
 For your convenience, the starter code defines the ICMP header as an `icmp_hdr` structure in `core/protocol.hpp`:
 
@@ -389,8 +387,7 @@ Your router should properly generate the following ICMP messages, including prop
     Sent in response to an incoming `Echo Request` message (ping) to one of the router's interfaces.
     Echo requests sent to other IP addresses should be forwarded to the next hop address as usual.
 
-- <span class="label label-info">Extra Credit</span>
-  `Time Exceeded` message (`type 11`, `code 0`):
+- `Time Exceeded` message (`type 11`, `code 0`):
 
     Sent if an IP packet is discarded during processing because the TTL field is 0. This is needed for traceroute to work.
 
@@ -689,6 +686,10 @@ Submissions that do not follow these requirements will not get any credit.
 
 - The router must respond correctly to ICMP echo requests.
 
+- Traceroute to router's interfaces and other hosts should work correctly
+    
+    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message.
+
 - The router must successfully route packets between the Internet and the application servers.
     * The router must be able to successfully transmit a small file (500 bytes)
     * The router must be able to successfully transmit a medium file (1 MiB)
@@ -696,11 +697,11 @@ Submissions that do not follow these requirements will not get any credit.
 
 - The router must maintain an ARP cache whose entries are invalidated and removed after a timeout period (timeouts should be on the order of `30 seconds`).
 
-- The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time (1 second).
+<!-- - The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time (1 second). -->
 
 - The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to `5` ARP requests, the queued packets are dropped.
 
-- The router must work well under any network topology.
+- The router should work in other single-router network topologies / with different routing tables.
 
 ### Deductions
 
@@ -712,15 +713,9 @@ Submissions that do not follow these requirements will not get any credit.
 
     * When no ARP reply after `5 requests` and enqueued packets are dropped.
 
-- (1 pt) ICMP time exceeded
-    
-    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message.
-
-
 - (1 pt) ICMP port unreachable
 
     * The router must handle TCP/UDP packets sent to one of its interfaces. In this case the router should respond with an ICMP port unreachable message.
-
 
 ## Acknowledgement
 
