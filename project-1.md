@@ -77,7 +77,7 @@ For example, the command below should result in connection to a server on the sa
 
 - The client must be able to connect to the specified server and port, transfer the specified file, and gracefully terminate the connection.
 
-- The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
+- The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the client must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
 - Client application should exit with code zero after successful transfer of the file to server.  It should support transfer of files that are up to 100 MiB file.
 

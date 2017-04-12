@@ -183,7 +183,7 @@ For example, the command below should result in connection to a server on the sa
 
   * Send UDP packet with `ACK` flag including the first part of the specified file.
 
-- The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the server must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
+- The client should gracefully process incorrect hostname and port number and exist with a non-zero exit code (you can assume that the specified file is always correct).  In addition to exit, the client must print out on standard error (`std::cerr`) an error message that starts with `ERROR:` string.
 
 - After file is successfully transferred file (all bytes acknowledged), the client should gracefully terminate the connection
 
