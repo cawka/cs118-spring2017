@@ -7,6 +7,14 @@ group: "Project 1"
 * toc
 {:toc}
 
+## Revisions
+
+- <span class="label label-info">Update April 16, 2017</span>
+
+    * Test 8 and 9 reduced by 5 pts (eliminated second sub-test)
+    * Test 11 and 12 increased by 5 pts (weight of second sub-test doubled)
+    * Added grading/testing hint
+
 ## Overview
 
 In this project, you will need to implement a simple client-server application that transfers a file over a TCP connection.
@@ -220,26 +228,29 @@ We will test your server against a "standard" implementation of the client, your
 1. (5 pts, public test) Client connects and starts transmitting a file
 1. (5 pts, public test) Server accepts a connection and start saving a file
 1. (5 pts, public test) Client able to successfully transmit a small file (500 bytes)
-1. (10 pts, 2 private tests) Client able to successfully transmit a medium size file (1 MiB)
+1. (5 pts, 1 private tests) Client able to successfully transmit a medium size file (1 MiB)
    * sending in large chunks without delays
-   * sending in small chunks, delaying each chunk a bit
-1. (10 pts, 2 private tests) Client able to successfully transmit a large size file (100 MiB)
+1. (5 pts, 1 private tests) Client able to successfully transmit a large size file (100 MiB)
    * sending in large chunks without delays
-   * sending in small chunks, delaying each chunk a bit
 1. (5 pts, public test) Server able to receive a small file (500 bytes) and save it in `1.file`
-1. (10 pts, 2 private tests) Server able to receive a medium file (1 MiB bytes) and save it in `1.file`
-   * receiving file sent in large chunks without delays
-   * receiving file sent in small chunks with delays
-1. (10 pts, 2 private tests) Server able to receive a large file (100 MiB bytes) and save it in `1.file`
-   * receiving file sent in large chunks without delays
-   * receiving file sent in small chunks with delays
+1. (15 pts, 2 private tests) Server able to receive a medium file (1 MiB bytes) and save it in `1.file`
+   * (5 pts) receiving file sent in large chunks without delays
+   * (10 pts) receiving file sent in small chunks with delays
+1. (15 pts, 2 private tests) Server able to receive a large file (100 MiB bytes) and save it in `1.file`
+   * (5 pts) receiving file sent in large chunks without delays
+   * (10 pts) receiving file sent in small chunks with delays
 1. (10 pts, 1 public and 1 private test) Server can properly receive 10 small files (sent without delays) in `1.file`, `2.file`, ... `3.file`
    * a single client connects sequentially
    * 10 clients connect simultaneously (our test will ensure proper ordering of connections)
 1. (5 pts, public test) Client handles abort connection attempt after 10 seconds.
 1. (5 pts, private test) Client aborts connection when server gets disconnected (server app or network connection is down)
 1. (5 pts, private test) Server aborts connection (a file should be created, containing only `ERROR` string) when doesn't receive data from client for more than 10 seconds
-1. (5 pts, private test) Client able to successfully send and server properly receive and save large file over lossy and large delay network (we will use `tc` based emulation.
+1. (5 pts, private test) Client able to successfully send and server properly receive and save large file over lossy and large delay network (we will use `tc` based emulation).
+
+
+### Grading Hint
+
+- If you see 100% load on your CPU when you running your client/server, it is an indication that something is wrong and test script will legitimately (but randomly) fail.
 
 ### Deductions
 
