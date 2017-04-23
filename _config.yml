@@ -75,6 +75,7 @@ course_info:
       office_hours: Mondays / 10:00am-12:00pm <b>(BH 2432)</b>
 
   projects:
-    - deadline: Sunday, April 23, 2017, 11pm PDT
+    - deadline: <del>Sunday, April 23, 2017, 11pm PDT</del>
+                Tuesday, April 25, 2017, 11pm PDT
     - deadline: Sunday, May 21, 2017, 11pm PDT
     - deadline: Sunday, June 11, 2017, 11pm PDT

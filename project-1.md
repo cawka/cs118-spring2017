@@ -239,7 +239,7 @@ We will test your server against a "standard" implementation of the client, your
 1. (15 pts, 2 private tests) Server able to receive a large file (100 MiB bytes) and save it in `1.file`
    * (5 pts) receiving file sent in large chunks without delays
    * (10 pts) receiving file sent in small chunks with delays
-1. (10 pts, 1 public and 1 private test) Server can properly receive 10 small files (sent without delays) in `1.file`, `2.file`, ... `3.file`
+1. (10 pts, 1 public and 1 private test) Server can properly receive 10 small files (sent without delays) in `1.file`, `2.file`, ... `10.file`
    * a single client connects sequentially
    * 10 clients connect simultaneously (our test will ensure proper ordering of connections)
 1. (5 pts, public test) Client handles abort connection attempt after 10 seconds.
