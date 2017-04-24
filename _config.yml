@@ -29,7 +29,7 @@ navbar_list:
   link: /syllabus.html
 - name: Homeworks
   link: /homeworks.html
-- name: Project 1 (Acio)
+- name: Project 1 (Accio)
   link: /project-1.html
 - name: Project 2 (Confundo)
   link: /project-2.html
