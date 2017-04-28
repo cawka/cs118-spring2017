@@ -429,7 +429,7 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
 ### Grading Criteria
 
-1. TBA
+1. 
 
 <!-- ###  Bonus points -->
 
