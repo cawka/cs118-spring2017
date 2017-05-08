@@ -450,12 +450,15 @@ Your code will then be automatically tested in some testing scenarios. If your c
 1. (5 pts) Server able to receive a large file (10 MiB bytes) and save it in 1.file (with reordered and delayed packets)
    * We will use `tc` command with reorder, gap, and delay to generate reordered and delayed packets
    * Test need to pass under different packet delays (100 ms ~ 600 ms) and reorder rates
+   * We will not test timeout on the server side
 1. (10 pts) Server able to receive a large file (10 MiB bytes) and save it in 1.file over lossy and large delay network
    * We will use `tc` command with loss and delay to generate the lossy and large delay network
    * Test need to pass under different packet delays (100 ms ~ 600 ms) and packet loss rates (5% ~ 20%)
+   * We will not test timeout on the server side
 1. (15 pts) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network
    * We will use `tc` command with loss and delay to generate the lossy and large delay network
    * Test need to pass under different packet delays (100 ms ~ 600 ms) and packet loss rates (5% ~ 20%)
+   * We will not test timeout on the server side
 
 
 <!-- ###  Bonus points -->
