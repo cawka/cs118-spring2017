@@ -433,25 +433,25 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
 ### Grading Criteria
 
-1. Miscellaneous tests (all public)
+1. Miscellaneous tests
 
-    1.1. (2.5 pts) At least 3 git commits (at least one from each group member)
+    1.1. (2.5 pts, public) At least 3 git commits (at least one from each group member)
 
-    1.2. (1.25 pts) Client handles incorrect hostname
+    1.2. (1.25 pts, public) Client handles incorrect hostname
 
-    1.3. (1.25 pts) Client handles incorrect port
+    1.3. (1.25 pts, public) Client handles incorrect port
 
-    1.4. (2.5 pts) Server handles incorrect port number
+    1.4. (2.5 pts, public) Server handles incorrect port number
 
 2. Client tests
 
-    2.1. (2.5 pts) Client initiates three-way handshake by sending a SYN packet with correct values in its header
+    2.1. (2.5 pts, public) Client initiates three-way handshake by sending a SYN packet with correct values in its header
 
-    2.2. (2.5 pts) Client has correct initial values for CWND, SS-THRESH, and Sequence Number
+    2.2. (2.5 pts, public) Client has correct initial values for CWND, SS-THRESH, and Sequence Number
 
-    2.3. (2.5 pts) Client sends data packets, which size should not exceed 524 bytes including a header
+    2.3. (5 pts, private) Data segments that client sends are not exceeding 512 bytes and on average larger than 500 bytes (for 1~MByte file)
 
-    2.4. (5 pts) Client should reset its sequence number to zero when the sequence number reaches the maximum value
+    2.4. (2.5 pts) Client should reset its sequence number to zero when the sequence number reaches the maximum value
 
     2.5. (5 pts) Client sends a FIN packet after transmitting a file
 
