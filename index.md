@@ -13,6 +13,9 @@ This course provides an introduction to fundamental concepts in the design and i
 ## Course Announcements
 
 - <span class="label label-primary">NOTE</span>
+  The room for the final has been assigned and it will be the same as for lectures, **ROLFE 1200**
+
+- <span class="label label-primary">NOTE</span>
   The midterm date has been changed to **May 1, 2017**
 
 - <span class="label label-primary">April 3, 2017</span>: Please submit the signed Academic Integrity and Honesty agreement by April 9, 2017.  Otherwise, your course work will not be graded.
