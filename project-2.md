@@ -454,21 +454,21 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
     2.2. (2.5 pts, public) Client has correct initial values for CWND, SS-THRESH, and Sequence Number
 
-    2.3. (5 pts, private) Data segments that client sends are not exceeding 512 bytes and on average larger than 500 bytes (for 1~MByte file)
+    2.3. (5 pts, public) Data segments that client sends are not exceeding 512 bytes and on average larger than 500 bytes (for 1~MByte file)
 
-    2.4. (2.5 pts) Client should reset its sequence number to zero when the sequence number reaches the maximum value
+    2.4. (2.5 pts, public) Client should reset its sequence number to zero when the sequence number reaches the maximum value
 
-    2.5. (2.5 pts) Client sends a FIN packet after transmitting a file
+    2.5. (2.5 pts, public) Client sends a FIN packet after transmitting a file
 
-    2.6. (2.5 pts) After finishing connection, client responds with ACK for incoming FINs for 2 seconds, dropping packets for this connection afterwards
+    2.6. (2.5 pts, private) After finishing connection, client responds with ACK for incoming FINs for 2 seconds, dropping packets for this connection afterwards
 
-    2.7. (5 pts) Client successfully transmits a small file
+    2.7. (5 pts, private) Client successfully transmits a small file
 
-    2.8. (5 pts) Client aborts the connection if no incoming packets for more than 10 seconds
+    2.8. (5 pts, private) Client aborts the connection if no incoming packets for more than 10 seconds
 
-    2.9. (5 pts) Client properly increases congestion window size in slow start phase
+    2.9. (5 pts, public) Client properly increases congestion window size in slow start phase
 
-    2.10. (5 pts) Client properly increases congestion window size in congestion avoidance phase
+    2.10. (5 pts, private) Client properly increases congestion window size in congestion avoidance phase
 
     2.11. (5 pts) Client detects and retransmits lost data segments
 
