@@ -453,19 +453,21 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
     2.4. (2.5 pts) Client should reset its sequence number to zero when the sequence number reaches the maximum value
 
-    2.5. (5 pts) Client sends a FIN packet after transmitting a file
+    2.5. (2.5 pts) Client sends a FIN packet after transmitting a file
 
-    2.6. (5 pts) Client sets a timer for 2 seconds to wait for FIN from server after receiving ACK of the FIN packet from itself
+    2.6. (2.5 pts) After finishing connection, client responds with ACK for incoming FINs for 2 seconds, dropping packets for this connection afterwards
 
-    2.7. (5 pts) Client and server abort the connection if no incoming packets more than 10 seconds
+    2.7. (5 pts) Client successfully transmits a small file
 
-    2.8. (5 pts) Client should properly increase congestion window size in slow start phase
+    2.8. (5 pts) Client aborts the connection if no incoming packets for more than 10 seconds
 
-    2.9. (5 pts) Client should properly increase congestion window size in congestion avoidance phase
+    2.9. (5 pts) Client properly increases congestion window size in slow start phase
 
-    2.10. (5 pts) Client should set SS-THRESH and CWND values properly after timeout
+    2.10. (5 pts) Client properly increases congestion window size in congestion avoidance phase
 
-    2.11. (5 pts) Client should be able to retransmit data after the last acknowledged byte
+    2.11. (5 pts) Client detects and retransmits lost data segments
+
+    2.12. (5 pts) Client sets SS-THRESH and CWND values properly after timeout
 
 3. Server tests
 
@@ -494,7 +496,6 @@ Your code will then be automatically tested in some testing scenarios. If your c
     * We will use `tc` command with loss and delay to generate the lossy and large delay network
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and packet loss rates (1% ~ 10%)
     * We will not test timeout on the server side
-
 
 <!-- ###  Bonus points -->
 
