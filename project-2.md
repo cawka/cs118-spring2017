@@ -12,6 +12,11 @@ group: "Project 2"
 
 - April 6, 2017: Corrected the `tc` command to reorder packets.
 
+- <span class="label label-primary">May 17, 2017</span>
+  Header encoding must be in **network order**
+
+  Client application should send payload of the maximum segment size (average payload size must be over 500 bytes)
+
 ## Overview
 
 In this project you will need to implement `Confundo`, a basic version of reliable data transfer protocol, including connection establishment and congestion control.
@@ -42,7 +47,7 @@ Both client and server must implement reliable data transfer using unreliable UD
 
 **Header Format**
 
-- The payload of each UDP packet sent by server and client MUST start with the following `12-byte` header:
+- The payload of each UDP packet sent by server and client MUST start with the following `12-byte` header.  All fields are in network order (most significant bit first):
 
          0                   1                   2                   3
          0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -236,7 +241,7 @@ For example, the command below should result in connection to a server on the sa
 
 ### Congestion Control Requirements
 
-Client and server (mostly client) is required to implement TCP Tahoe congestion window maintenance logic:
+Client and server (mostly client) is required to implement TCP Tahoe congestion window maintenance logic (without 3-dup ACK loss detection):
 
 - After connection is established, the client should send up to `CWND` bytes of data without starting the wait for acknowledgements
 
