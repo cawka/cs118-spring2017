@@ -460,7 +460,7 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
     2.5. (2.5 pts, public) Client sends a FIN packet after transmitting a file
 
-    2.6. (2.5 pts, private) After finishing connection, client responds with ACK for incoming FINs for 2 seconds, dropping packets for this connection afterwards
+    2.6. (2.5 pts, public) After finishing connection, client responds with ACK for incoming FINs for 2 seconds, dropping packets for this connection afterwards
 
     2.7. (5 pts, private) Client successfully transmits a small file
 
@@ -470,33 +470,37 @@ Your code will then be automatically tested in some testing scenarios. If your c
 
     2.10. (5 pts, private) Client properly increases congestion window size in congestion avoidance phase
 
-    2.11. (5 pts) Client detects and retransmits lost data segments
+    2.11. (5 pts, public) Client detects and retransmits lost data segments
 
-    2.12. (5 pts) Client sets SS-THRESH and CWND values properly after timeout
+    2.12. (5 pts, private) Client sets SS-THRESH and CWND values properly after timeout
 
 3. Server tests
 
-    3.1. (2.5 pts) Server responses with SYN-ACK packet with correct connection ID
+    3.1. (2.5 pts, public) Server responses with SYN-ACK packet with correct connection ID
 
-    3.2. (2.5 pts) Server has correct initial values for CWND, SS-THRESH, and Sequence Number
+    3.2. (2.5 pts, public) Server has correct initial values for CWND, SS-THRESH, and Sequence Number
 
-    3.3. (5 pts) Server responds with ACK packets, which include the next expected in-sequence byte to receive (cumulative ACK)
+    3.3. (5 pts, public) Server responds with ACK packets, which include the next expected in-sequence byte to receive (cumulative ACK)
 
-    3.4. (private, 5 pts) Server able to receive a large file (10 MiB bytes) and save it in 1.file without delay, loss, and reorder
+    3.4. (5 pts, private) Server able to receive a large file (10 MiB bytes) and save it in 1.file without delay, loss, and reorder
 
-    3.5. (private, 5 pts) Server able to receive a large file (10 MiB bytes) and save it in 1.file (with reordered and delayed packets)
+    3.5. (5 pts, private) Server able to receive a large file (10 MiB bytes) and save it in 1.file over lossy and large delay network
 
     * We will use `tc` command with reorder, gap, and delay to generate reordered and delayed packets
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and reorder rates
     * We will not test timeout on the server side
 
-    3.6. (10 pts) Server able to receive a large file (10 MiB bytes) and save it in 1.file over lossy and large delay network
+    3.6. (5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file without delay, loss, and reorder (sequentially)
+
+    3.7. (5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file without delay, loss, and reorder (in parallel)
+
+    3.8. (7.5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network (sequentially)
 
     * We will use `tc` command with loss and delay to generate the lossy and large delay network
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and packet loss rates (1% ~ 10%)
     * We will not test timeout on the server side
 
-    3.7. (15 pts) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network
+    3.8. (7.5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network (in parallel)
 
     * We will use `tc` command with loss and delay to generate the lossy and large delay network
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and packet loss rates (1% ~ 10%)
