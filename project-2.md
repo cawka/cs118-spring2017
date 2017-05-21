@@ -287,6 +287,39 @@ and so on.
 
 - Third, introduce packet loss.  Now you have to add a timer at the first sent and unacked packet. There should be one timeout whenever data segments are sent out. Also congestion control features should be implemented for the successful file transmission.
 
+### Submission Hints
+
+**For those struggling with Test Failed: Client exit code is not zero (-9, stderr: ) or similar** (Credits to James Wang)
+
+Checklist:
+
+- Are your cout statements correct? You should not have any other `std::cout` statements besides the one in the spec, they should be in the right format, printed at the right time with the right optional outputs, and with the correct `cwnd` and `ssthresh` values.
+
+    - No other cout statements, others should be to `std::cerr`
+    - `std::cout` statements are in the exact correct format
+    - You are adding in the `[ACK]` `[SYN]` `[FIN]` `[DUP]` optional output correctly. DUP in particular is easy to miss.
+    - Are you printing a statement every time you should be? Is there a case where you receive something but don't print it, etc.
+
+- Are your timers correct?
+
+    - Is your 0.5 second retransmission working properly?
+    - Are you waiting the 2 seconds before closing the client?
+    - Do you have the 10 second timer working properly?
+    - Is there a place where you should be updating your timer threshold (e.g., restarting when it begins to countdown) but you aren't?
+
+- Is there a memory error? We had a couple and are not sure if this error is directly related but fixing these will help you chase down this error more easily. Most of these should be caught
+
+    -  Are you ever dereferencing a pointer that isn't pointing at anything?
+    -  Do you properly free your memory for all of your allocated objects?
+    -  Do you ever invalidate an iterator by mistake?
+    -  Do you somehow allocate so much memory that the kernel has to send a SIGKILL to terminate your program? This really shouldn't happen realistically but you never know...
+
+- Do you ever somehow go into an infinite loop by accident?
+
+- Do you ever unintentionally set your error code to something other than 0 where it should be? If so then your error might look similar but with something besides -9...
+
+This error is especially baffling because it can sometimes occur for some test cases, sometimes for others.  For us, it was periodically failing 2.3, 2.4, and 2.9.  If it is periodically failing then it is likely something to do with a process that doesn't occur every time, such as a timer error, a drop packet `std::cout`, a retransmission error, or bug in loss control.
+
 ### Emulating packet loss
 
 If are using the [Vagrantfile provided in project-2 skeleton](https://github.com/cs118/spring17-project2), you can automatically instantiate two virtual machines that are connected to each other using a private network (`enp0s8` interface on each).  You can also run preinstalled `/set-loss.sh` script to enable emulation of 10% loss and delay of 20ms in each direction (need to run on each VM separately).
@@ -500,7 +533,7 @@ Your code will then be automatically tested in some testing scenarios. If your c
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and packet loss rates (1% ~ 10%)
     * We will not test timeout on the server side
 
-    3.8. (7.5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network (in parallel)
+    3.9. (7.5 pts, private) Server able to receive 10 small files (1 MiB bytes) in 1.file, 2.file, ..., 10.file over lossy and large delay network (in parallel)
 
     * We will use `tc` command with loss and delay to generate the lossy and large delay network
     * Test need to pass under different packet delays (50 ms ~ 100 ms) and packet loss rates (1% ~ 10%)
