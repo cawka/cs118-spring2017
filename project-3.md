@@ -620,11 +620,12 @@ then inside the newly opened `xterm`:
 $ sudo tcpdump -n -i server1-eth0
 ```
 
-<!-- ### Length of Assignment -->
+### Length of Assignment
 
-<!-- This assignment is considerably hard, so get started early. -->
+**This assignment is considerably hard, so get started early, not as many of you did for project 2.**
 
-<!-- In our reference solution, we added 520 lines of C++ code, including whitespace and comments. Of course, your solution may need fewer or more lines of code, but this gives you a rough idea of the size of the assignment to a first approximation. -->
+In our reference solution, we added less than 520 lines of C/C++ code, including whitespace and comments.
+Of course, your solution may need fewer or more lines of code, but this gives you a rough idea of the size of the assignment to a first approximation.
 
 ## A Few Hints
 
@@ -680,28 +681,27 @@ Submissions that do not follow these requirements will not get any credit.
 
 ### Grading Criteria
 
-- Each group member must have at least 3 git commits.
+- At least 3 git commits (at least one from each group member)
 
-- The router must correctly handle ARP requests and replies.
+- The router must correctly handle ARP requests and replies
 
-- The router must respond correctly to ICMP echo requests.
+- The router must respond correctly to ICMP echo requests
 
 - Traceroute to router's interfaces and other hosts should work correctly
     
-    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message.
+    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message
 
-- The router must successfully route packets between the Internet and the application servers.
+- The router must successfully route packets between the Internet and the application servers
+
     * The router must be able to successfully transmit a small file (500 bytes)
     * The router must be able to successfully transmit a medium file (1 MiB)
-    * The router must be able to successfully transmit a large file (100 MiB)
+    * The router must be able to successfully transmit a large file (10 MiB)
 
-- The router must maintain an ARP cache whose entries are invalidated and removed after a timeout period (timeouts should be on the order of `30 seconds`).
+- The router must maintain an ARP cache whose entries are invalidated and removed after a timeout period (timeouts should be on the order of `30 seconds`)
 
-<!-- - The router must enforce guarantees on timeouts--that is, if an ARP request is not responded to within a fixed period of time (1 second). -->
+- The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to `5` ARP requests, the queued packets are dropped
 
-- The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to `5` ARP requests, the queued packets are dropped.
-
-- The router should work in other single-router network topologies / with different routing tables.
+- The router should work in other single-router network topologies / with different routing tables
 
 ### Deductions
 
