@@ -469,6 +469,8 @@ Your code will be first checked by a software plagiarism detecting tool. If we f
 
 Your code will then be automatically tested in some testing scenarios. If your code can pass all our automated test cases, you will get the full credit.
 
+We may test your server against a "standard" implementation of the client, your client against a "standard" server, as well as your client against your server.  Projects receive full credit only if all these checks are passed.
+
 ### Grading Criteria
 
 1. Miscellaneous tests

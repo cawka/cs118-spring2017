@@ -217,7 +217,7 @@ Your code will be first checked by a software plagiarism detecting tool. If we f
 
 Your code will then be automatically tested in some testing scenarios.
 
-We will test your server against a "standard" implementation of the client, your client against a "standard" server, as well as your client against your server.  Projects receive full credit only all these checks are passed.
+We may test your server against a "standard" implementation of the client, your client against a "standard" server, as well as your client against your server.  Projects receive full credit if only all these checks are passed.
 
 ### Grading Criteria
 
