@@ -187,7 +187,7 @@ Note that ARP requests are sent to the broadcast MAC address (`FF:FF:FF:FF:FF:FF
         |                                                               |
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
         |                                                               |
-        ~                  Destination hardware address                 ~
+        ~                  Destination protocol address                 ~
         |                                                               |
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
