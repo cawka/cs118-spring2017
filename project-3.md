@@ -102,12 +102,12 @@ If your router is functioning correctly, all of the following operations should 
     ...
     ```
 
-- Transferring file from client to server(s) using the code from your project 1 or 2.
+- Transferring file from client to server(s) using the code from your project 1 or 2. Notice that outputs need to be redirected into files; otherwise, the client or server(s) may stop responding.
 
     ```bash
-    mininet> server1 /path/to/your/server 5000 /folder/to/save &
+    mininet> server1 /path/to/your/server 5000 /folder/to/save > serverOutput &
     ...
-    mininet> client /path/to/your/client 127.0.0.1 5000 /file/to/transfer
+    mininet> client /path/to/your/client 127.0.0.1 5000 /file/to/transfer > clientOutput
     ...
     ```
 
@@ -233,7 +233,7 @@ struct arp_hdr
     * If a valid entry found, the router should proceed with handling the IP packet
     * Otherwise, the router should queue the received packet and start sending ARP request to discover the IP-MAC mapping.
 
-- When router receives an ARP reply, it should record IP-MAC mapping information in ARP cache (destination IP/destination hardware address).  Afterwards, the router should send out all corresponding enqueued packets.
+- When router receives an ARP reply, it should record IP-MAC mapping information in ARP cache (Source IP/Source hardware address in the ARP reply).  Afterwards, the router should send out all corresponding enqueued packets.
 
   Your implementation can also record mapping from ARP requests using source IP and hardware address, but it is not required in this project.
 
