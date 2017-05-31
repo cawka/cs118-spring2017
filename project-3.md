@@ -105,7 +105,7 @@ If your router is functioning correctly, all of the following operations should 
 - Transferring file from client to server(s) using the code from your project 1 or 2. Notice that outputs need to be redirected into files; otherwise, the client or server(s) may stop responding.
 
     ```bash
-    mininet> server1 /path/to/your/server 5000 /folder/to/save > serverOutput &
+    mininet> server1 /path/to/your/server 5000 /folder/to/save > server1Output &
     ...
     mininet> client /path/to/your/client 127.0.0.1 5000 /file/to/transfer > clientOutput
     ...
