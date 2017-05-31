@@ -241,7 +241,7 @@ struct arp_hdr
 
 - The router should send an ARP request about once a second until an ARP reply comes back or the request has been sent out at least `5 times`.
 
-  If your router didn't receive ARP reply after sending 5 ARP requests, it should stop sending requests, remove pending requests, and any packets that are queued for the transmission.
+  If your router didn't receive ARP reply after re-transmitting an ARP request 5 times, it should stop re-transmitting, remove the pending request, and any packets that are queued for the transmission that are associated with the request.
 
   <span class="label label-info">Extra Credit</span>
   Your router can also send an ICMP Destination Unreachable message to the source IP.
