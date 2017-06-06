@@ -107,7 +107,7 @@ If your router is functioning correctly, all of the following operations should 
     ```bash
     mininet> server1 /path/to/your/server 5000 /folder/to/save > server1Output &
     ...
-    mininet> client /path/to/your/client 127.0.0.1 5000 /file/to/transfer > clientOutput
+    mininet> client /path/to/your/client 192.168.2.2 5000 /file/to/transfer > clientOutput &
     ...
     ```
 
