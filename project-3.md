@@ -242,7 +242,9 @@ struct arp_hdr
 
 - When router receives an ARP reply, it should record IP-MAC mapping information in ARP cache (Source IP/Source hardware address in the ARP reply).  Afterwards, the router should send out all corresponding enqueued packets.
 
-  Your implementation can also record mapping from ARP requests using source IP and hardware address, but it is not required in this project.
+  <span class="label label-warning">Note</span> Your implementation should not save IP-MAC mapping based on any other messages, only from ARP replies!
+
+  <del>Your implementation can also record mapping from ARP requests using source IP and hardware address, but it is not required in this project.</del>
 
 - To reduce staleness of the ARP information, entries in ARP cache should time out after `30 seconds`.  The starter code (`ArpCache` class) already includes the facility to mark ARP entries "invalid".  Your task is to remove such entries and to implement ARP re-request logic.
 
