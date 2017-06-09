@@ -688,33 +688,53 @@ Submissions that do not follow these requirements will not get any credit.
 
 ### Grading Criteria
 
-- At least 3 git commits (at least one from each group member)
+1. Miscellaneous tests
 
-- The router must correctly handle ARP requests and replies
+    * 1.1. (5 pts, public) At least 3 git commits (at least one from each group member)
 
-- The router must respond correctly to ICMP echo requests
+2. Ping tests
 
-- Traceroute to router's interfaces and other hosts should work correctly
-    
-    * The router must discard an IP packet when its TTL field is 0. In this case the router should respond with an ICMP time exceeded message
+    * 2.1. (5 pts, public) Pings from client to all other hosts (all pings expected to succeed), including non-existing host (error expected)
 
-- The router must successfully route packets between the Internet and the application servers
+    * 2.2. (5 pts, public) Pings from server1 to all other hosts (all pings expected to succeed), including non-existing host (error expected)
 
-    * The router must be able to successfully transmit a small file (500 bytes)
-    * The router must be able to successfully transmit a medium file (1 MiB)
-    * The router must be able to successfully transmit a large file (10 MiB)
+    * 2.3. (5 pts, public) Pings from server2 to all other hosts (all pings expected to succeed), including non-existing host (error expected)
 
-- The router must maintain an ARP cache whose entries are invalidated and removed after a timeout period (timeouts should be on the order of `30 seconds`)
+    * 2.4. (5 pts, public) Ping responses (from client) have proper TTLs
 
-- The router must queue all packets waiting for outstanding ARP replies. If a host does not respond to `5` ARP requests, the queued packets are dropped
+    * 2.5. (5 pts, private)  Ping from client to server1, check ARP cache, there should be two entries
+ 
+    * 2.6. (10, private)  Ping from client to server1, after 40 seconds, the ARP cache should be empty (+ no segfaults)
 
-- The router should work in other single-router network topologies / with different routing tables
+    * 2.7. (10, private)  Ping from client a non-existing IP, router sends proper ARP requests (+ no segfaults)
+
+    * 2.8. (Extra 1 pts, private)  Ping from client, receive host unreachable message
+
+3. Traceroute tests
+
+    * 3.1. (10 pts, public) Traceroute from client to all other hosts, including a non-existing host
+
+    * 3.2. (10 pts, private) Traceroute from server1 to all other hosts, including a non-existing host
+
+    * 3.3. (10 pts, private) Traceroute from server2 to all other hosts, including a non-existing host
+
+    * 3.4. (Extra: 1 pts, private) Traceroute from client to router's interfaces (get 1 line)
+
+4. File transfer tests
+
+    * 4.1. (10 pts, public) Transfer a small file (50k) from server1 to client
+
+    * 4.2. (5 pts, private) transfer a medium file (1M) from server1 to client
+
+    * 4.3. (5 pts, private) transfer a large file (10M) from server1 to client
+
+Note that the router should work in other single-router network topologies / with different routing tables
 
 ### Deductions
 
 (-5 pts) The submission archive contains temporary or other non-source code file, except `README.md`, `Vagrantfile`, files under `.git` subfolder (and any files from extra credit part).
 
-### Extra Credit
+### Extra Credit (included in the above)
 
 - (1 pt) ICMP destination unreachable
 
