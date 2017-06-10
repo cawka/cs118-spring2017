@@ -246,7 +246,7 @@ struct arp_hdr
 
   <del>Your implementation can also record mapping from ARP requests using source IP and hardware address, but it is not required in this project.</del>
 
-- To reduce staleness of the ARP information, entries in ARP cache should time out after `30 seconds`.  The starter code (`ArpCache` class) already includes the facility to mark ARP entries "invalid".  Your task is to remove such entries and to implement ARP re-request logic.
+- To reduce staleness of the ARP information, entries in ARP cache should time out after `30 seconds`.  The starter code (`ArpCache` class) already includes the facility to mark ARP entries "invalid".  Your task is to remove such entries.  If there is an ongoing traffic (e.g., client still pinging the server), then the router should go through the standard mechanism to send ARP request and then cache the response.  If there is no ongoing traffic, then ARP cache should eventually become empty.
 
 - The router should send an ARP request about once a second until an ARP reply comes back or the request has been sent out at least `5 times`.
 
