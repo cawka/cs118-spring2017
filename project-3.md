@@ -704,7 +704,7 @@ Submissions that do not follow these requirements will not get any credit.
 
     * 2.4. (5 pts, public) Ping responses (from client) have proper TTLs
 
-    * 2.5. (5 pts, private)  Ping from client to server1, check ARP cache, there should be two entries
+    * 2.5. (5 pts, public)  Ping from client to server1, check ARP cache, there should be two entries
  
     * 2.6. (10, private)  Ping from client to server1, after 40 seconds, the ARP cache should be empty (+ no segfaults)
 
